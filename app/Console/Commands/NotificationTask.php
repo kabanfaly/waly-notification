@@ -25,6 +25,8 @@ class NotificationTask extends Command
      */
     protected $description = 'Command description';
 
+    protected $isProduction;
+
     /**
      * Create a new command instance.
      *
@@ -33,6 +35,8 @@ class NotificationTask extends Command
     public function __construct()
     {
         parent::__construct();
+        $this->isProduction = config('app.env') === 'production';
+        Log::info($this->isProduction ? 'Env Production' : 'Env Test');
     }
 
     /**
@@ -68,8 +72,8 @@ class NotificationTask extends Command
             $member_mail_sent_at = null;
             $walynw_mail_sent_at = null;
             $body = $this->buidBody($notification);
-            $is_production = config('app.env') === 'production';
-            $member_mail = $is_production ? $notification->email : config('app.testmail');
+
+            $member_mail = $this->isProduction ? $notification->email : config('app.testmail');
 
             if (Mail::to($member_mail)->send(new NotificationMail($body, 'notifications.member-payment-confirmation', 'Confirmation de paiement')))
             {
@@ -77,7 +81,7 @@ class NotificationTask extends Command
                 Log::info("Member Mail sent to {$notification->email}");
             }
 
-            $walymail = $is_production ? config('app.walynw_email') : config('app.testmail');
+            $walymail = $this->isProduction ? config('app.walynw_email') : config('app.testmail');
             if (Mail::to($walymail)->send(new NotificationMail($body, 'notifications.walynw-payment-notification', 'Notification de paiement')))
             {
                 $walynw_mail_sent_at = Carbon::now();
@@ -107,8 +111,7 @@ class NotificationTask extends Command
         foreach ($notifications as $notification)
         {
             $member_mail_sent_at = null;
-            $is_production = config('app.env') === 'production';
-            $member_mail = $is_production ? $notification->email : config('app.testmail');
+            $member_mail = $this->isProduction ? $notification->email : config('app.testmail');
 
             if (Mail::to($member_mail)->send(new NotificationMail($this->buidBody($notification), 'notifications.member-payment-confirmation', 'Confirmation de paiement')))
             {
@@ -139,8 +142,7 @@ class NotificationTask extends Command
         foreach ($notifications as $notification)
         {
             $walynw_mail_sent_at = null;
-            $is_production = config('app.env') === 'production';
-            $walymail = $is_production ? config('app.walynw_email') : config('app.testmail');
+            $walymail = $this->isProduction ? config('app.walynw_email') : config('app.testmail');
 
             if (Mail::to($walymail)->send(new NotificationMail($this->buidBody($notification), 'notifications.walynw-payment-notification', 'Notification de paiement')))
             {
