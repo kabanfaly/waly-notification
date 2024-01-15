@@ -90,7 +90,6 @@ class NotificationTask extends Command
             DB::table('VbE_custom_payments_notifications')->insert([
                 ['entry_id' => $notification->entry_id, 'member_mail_sent_at' => $member_mail_sent_at, 'walynw_mail_sent_at' => $walynw_mail_sent_at],
             ]);
-            break;
         }
         Log::info("Sending mails for new payments --> End");
     }
