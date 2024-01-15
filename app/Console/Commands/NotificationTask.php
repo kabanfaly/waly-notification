@@ -60,7 +60,7 @@ class NotificationTask extends Command
         $payments_notifications_ids = DB::table('VbE_custom_payments_notifications')->select('entry_id');
         $notifications = DB::table('VbE_view_wpforms_payments_done')
             ->whereNotIn('entry_id', $payments_notifications_ids)
-            ->limit(10)
+            ->limit(5)
             ->get();
 
         foreach ($notifications as $notification)
@@ -101,7 +101,7 @@ class NotificationTask extends Command
 
         $notifications = DB::table('VbE_view_wpforms_payments_done')
             ->whereIn('entry_id', $payments_notifications_ids)
-            ->limit(10)
+            ->limit(5)
             ->get();
 
         foreach ($notifications as $notification)
@@ -133,7 +133,7 @@ class NotificationTask extends Command
 
         $notifications = DB::table('VbE_view_wpforms_payments_done')
             ->whereIn('entry_id', $payments_notifications_ids)
-            ->limit(10)
+            ->limit(5)
             ->get();
 
         foreach ($notifications as $notification)
