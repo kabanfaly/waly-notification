@@ -45,7 +45,7 @@ class NotificationTask extends Command
 
         $this->sendNewNotifications();
 
-        $this->info('Custom task executed successfully!');
+        $this->info('Notification task executed successfully!');
     }
 
     /**
@@ -77,14 +77,14 @@ class NotificationTask extends Command
             if (Mail::to($member_mail)->send(new NotificationMail($body, 'notifications.member-payment-confirmation', 'Confirmation de paiement')))
             {
                 $member_mail_sent_at = Carbon::now();
-                Log::info("Member Mail sent to {mail}", [$notification->email]);
+                Log::info("Member Mail sent to {$notification->email}");
             }
 
             $walymail = $is_production ? config('app.walynw_email') : config('app.testmail');
             if (Mail::to($walymail)->send(new NotificationMail($body, 'notifications.walynw-payment-notification', 'Notification de paiement')))
             {
                 $walynw_mail_sent_at = Carbon::now();
-                Log::info("Walynw Mail sent to {mail}", [$notification->email]);
+                Log::info("Walynw Mail sent to {$notification->email}");
             }
 
             DB::table('VbE_custom_payments_notifications')->insert([
