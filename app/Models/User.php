@@ -18,11 +18,11 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'display_name',
-        'user_email',
-        'user_pass',
+        'email',
+        'password',
     ];
 
-    protected $table = "wp_users";
+    protected $table = "VbE_notification_users";
 
     /**
      * The attributes that should be hidden for serialization.
@@ -30,7 +30,7 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $hidden = [
-        'user_pass',
+        'password',
     ];
 
     /**
@@ -39,6 +39,6 @@ class User extends Authenticatable
      * @var array<string, string>
      */
     protected $casts = [
-        'user_registered' => 'datetime',
+        'email_verified_at' => 'datetime',
     ];
 }

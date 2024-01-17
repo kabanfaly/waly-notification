@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\User;
 
 
 class UserController extends Controller
@@ -24,8 +25,8 @@ class UserController extends Controller
     {
         $formFields = $request->validate(
             [
-                'user_email' => ['required', 'email'],
-                'user_pass' => 'required',
+                'email' => ['required', 'email'],
+                'password' => 'required',
             ]
         );
 
@@ -33,7 +34,7 @@ class UserController extends Controller
             $request->session()->regenerate();
             return redirect('/');
         }
-        return back()->withErrors(['user_email' => 'notification.invalid_credential'])->onlyInput('user_email');
+        return back()->withErrors(['email' => 'notification.invalid_credential'])->onlyInput('email');
     }
 
 
