@@ -1152,6 +1152,10 @@ input:checked + .toggle-bg {
   margin-left: 0.75rem;
 }
 
+.mr-2 {
+  margin-right: 0.5rem;
+}
+
 .mr-3 {
   margin-right: 0.75rem;
 }
@@ -1170,10 +1174,6 @@ input:checked + .toggle-bg {
 
 .mt-24 {
   margin-top: 6rem;
-}
-
-.mr-2 {
-  margin-right: 0.5rem;
 }
 
 .block {
@@ -2234,6 +2234,11 @@ input:checked + .toggle-bg {
     border-radius: 0.5rem;
   }
 
+  .sm\:px-4 {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
   .sm\:text-center {
     text-align: center;
   }
@@ -2258,6 +2263,10 @@ input:checked + .toggle-bg {
 
   .md\:mt-20 {
     margin-top: 5rem;
+  }
+
+  .md\:mt-40 {
+    margin-top: 10rem;
   }
 
   .md\:flex {

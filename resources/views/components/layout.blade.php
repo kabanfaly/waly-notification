@@ -19,7 +19,7 @@
 <body>
     <main class="bg-white flex flex-row">
         <div class="grow">
-            <nav class="bg-white border-gray-200 dark:bg-gray-900">
+            <nav class="bg-white sm:px-4 dark:bg-gray-900 fixed w-full z-20 top-0 left-0 border-b border-gray-200 dark:border-gray-600">
                 <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
                     <a href="/" class="flex items-center space-x-3 rtl:space-x-reverse">
                         <img class="w-32" src="{{ asset('images/logo.png') }}" class="mr-3 h-6 sm:h-9" alt="waly Logo">
@@ -40,11 +40,6 @@
                                 </div>
                                 <ul class="py-2" aria-labelledby="user-menu-button">
                                     <li>
-                                        <a href="/account/profile" class="block py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
-                                            <i class="fa-solid fa-user mr-2"></i>Mon compte
-                                        </a>
-                                    </li>
-                                    <li>
                                         <a href="/logout" class="block py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
                                             <i class="fa-solid fa-arrow-right-from-bracket mr-2"></i>Déconnexion
                                         </a>
@@ -62,7 +57,7 @@
                 </div>
             </nav>
 
-            <div class="md:mt-20 border-gray-200 rounded-lg mb-24">
+            <div class="md:mt-40 border-gray-200 rounded-lg mb-24">
                 <div class="rounded-lg mb-2 pl-4 text-center">
                     <h2 class="text-[#0F3B61] text-2xl font-bold mb-6">{!! __($title) !!}</h2>
                 </div>
