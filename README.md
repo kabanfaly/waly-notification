@@ -10,3 +10,8 @@ The service can be test locally in a non production environment in order to rece
 To enable the test mode:
 - Change the value of APP_ENV variable to local from '.env' file
 - Change the value TEST_MAIL variable to a choice email from '.env' file
+
+
+# Cron execution 
+
+php PATH_TO_PROJECT/artisan schedule:run >> PATH_TO_PROJECT/storage/logs/cron.log
