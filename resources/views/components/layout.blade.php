@@ -24,8 +24,9 @@
                 <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
                     <a href="/" class="flex items-center space-x-3 rtl:space-x-reverse">
                         <img class="w-32" src="{{ asset('images/logo.png') }}" class="mr-3 h-6 sm:h-9" alt="waly Logo">
-                        <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Gestionnaire de notifications</span>
+
                     </a>
+                    <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Gestionnaire de notifications</span>
                     @auth
                         <div class="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
                             <button type="button" class="flex text-sm bg-gray-800 rounded-full md:me-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
