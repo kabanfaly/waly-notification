@@ -1,18 +1,23 @@
 <x-profile :user="$user">
-    <x-profile-card title="users.change_password">
+    <x-profile-card title="users.edit_profile">
         <div class="flex flex-col pb-10 p-4">
-            <form action="/account/profile/change-password/{{ $user->id }}" method="POST">
+            <form action="/account/profile/{{ $user->id }}" method="POST">
                 @csrf
                 @method('PUT')
-                <div class="grid gap-6 mb-6 mt-4">
+                <div class="grid gap-6 mb-6 md:grid-cols-2 mt-4">
                     <div>
-                        <x-input name="current_password" type="password" label="{!! __('users.current_password') !!}" value="{{ old('current_password') }}" required />
+                        <x-input name="first_name" label="{!! __('users.first_name') !!}*" :value="$user->first_name" required />
                     </div>
                     <div>
-                        <x-input name="password" type="password" label="{!! __('users.new_password') !!}" value="{{ old('password') }}" required />
+                        <x-input name="last_name" label="{!! __('users.last_name') !!}*" :value="$user->last_name" required />
                     </div>
+
                     <div>
-                        <x-input name="password_confirmation" type="password" label="{!! __('users.new_password_confirmation') !!}" value="{{ old('password_confirmation') }}" required />
+                        <x-input type="email" name="email" label="{!! __('users.email') !!}*" :value="$user->email" required />
+                    </div>
+
+                    <div class="flex items-start text-xs mb-2">
+                        <span>* Champs obligatoires</span>
                     </div>
                 </div>
                 <div class="flex items-center p-6 space-x-2 rounded-b border-t border-gray-200 dark:border-gray-600">

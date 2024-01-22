@@ -24,3 +24,11 @@ Route::get('/account/forgot-password', [UserController::class , 'showForgotPassw
 Route::post('/account/reset-password/init', [UserController::class , 'initPasswordReset']);
 Route::get('/account/reset-password/{key}', [UserController::class , 'passwordReset']);
 Route::post('/account/reset-password', [UserController::class , 'completePasswordReset']);
+
+
+Route::post('/account/reset-password', [UserController::class , 'completePasswordReset']);
+Route::get('/account/profile', [UserController::class , 'showProfile'])->middleware('auth');
+Route::put('/account/profile/{user}', [UserController::class , 'updateProfile'])->middleware('auth');
+Route::get('/account/profile/edit', [UserController::class , 'editProfile'])->middleware('auth');
+Route::put('/account/profile/change-password/{user}', [UserController::class , 'updatePassword'])->middleware('auth');
+Route::get('/account/profile/change-password', [UserController::class , 'changePassword'])->middleware('auth');

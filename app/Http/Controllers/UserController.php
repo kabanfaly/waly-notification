@@ -161,4 +161,61 @@ class UserController extends Controller
         return redirect('/login')->with('message', 'users.reset_password.success');
     }
 
+    public function showProfile()
+    {
+        return view(
+            'users.profile',
+            [
+                'user' => auth()->user()
+            ]
+        );
+    }
+
+    public function editProfile()
+    {
+        return view(
+            'users.profile-edit',
+            [
+                'user' => auth()->user()
+            ]
+        );
+    }
+
+
+    public function changePassword()
+    {
+        return view(
+            'users.change-password',
+            [
+                'user' => auth()->user()
+            ]
+        );
+    }
+
+    public function updatePassword(Request $request, User $user)
+    {
+        if ($user->id != auth()->id()) {
+            abort(403, 'Unauthorized Action');
+        }
+        // Check the current password
+        $user = $user = User::where('email', '=', auth()->user()->email)
+            ->where('activated', '=', true)
+            ->first();
+
+        if ($user != null && !password_verify($request['current_password'], $user->password)) {
+            return back()->withInput()->withErrors(['current_password' => 'users.invalid.current_password'])
+                ->onlyInput('current_password');
+        }
+
+        $formFields = $request->validate(
+            [
+                'current_password' => 'required',
+                'password' => 'required|confirmed|min:6',
+            ]
+        );
+        $user->update(['password' => bcrypt($formFields['password'])]);
+        return redirect('/account/profile')->with('message', 'users.password.updated');
+    }
+
+
 }
