@@ -165,6 +165,7 @@ class NotificationTask extends Command
             'email' => $notification->email,
             'total_amount' => $notification->total_amount,
             'date_created_gmt' => $notification->date_created_gmt,
+            'transaction_id' => $notification->transaction_id,
             'currency' => $notification->currency,
         ];
     }
