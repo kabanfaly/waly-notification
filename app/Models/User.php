@@ -11,16 +11,6 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
-    protected $fillable = [
-        'display_name',
-        'email',
-        'password',
-    ];
 
     protected $table = "VbE_notification_users";
 
@@ -31,6 +21,7 @@ class User extends Authenticatable
      */
     protected $hidden = [
         'password',
+        'remember_token',
     ];
 
     /**

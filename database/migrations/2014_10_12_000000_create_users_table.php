@@ -15,9 +15,12 @@ return new class extends Migration
             $table->id();
             $table->string('first_name', 50);
             $table->string('last_name', 50);
+            $table->boolean('activated')->default(false);
             $table->string('email', 50)->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('reset_key', 100)->nullable();
+            $table->timestamp('reset_date')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

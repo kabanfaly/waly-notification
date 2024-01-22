@@ -19,7 +19,7 @@
                                     @
                                 </span>
                                 <input type="email" name="email" id="email" value="{{ old('email') }}"
-                                    class="rounded-none rounded-r-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm border-gray-300 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    class="rounded-none rounded-r-lg border border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                     placeholder="" required>
                             </div>
                             @error('email')
@@ -35,12 +35,25 @@
                                     <i class="fa-solid fa-lock"></i>
                                 </span>
                                 <input type="password" name="password" id="password" value="{{ old('password') }}"
-                                    class="rounded-none rounded-r-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm border-gray-300 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    class="rounded-none rounded-r-lg border border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                     placeholder="" required>
                             </div>
                             @error('password')
                                 <p class="text-red-500 text-xs mt-1">{!! __($message) !!}</p>
                             @enderror
+                        </div>
+                        <div class="flex justify-between mb-6">
+                            <div class="flex items-start">
+                                <div class="flex items-center h-5">
+                                    <input id="remember" type="checkbox" name="remember"
+                                        class="w-4 h-4 bg-gray-50 rounded border border-gray-300 focus:ring-3 focus:ring-blue-300 dark:bg-gray-600 dark:border-gray-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800">
+                                </div>
+                                <label for="remember" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+                                    {!! __('users.remember_me') !!} </label>
+                            </div>
+                            <a href="/account/forgot-password"
+                                class="text-sm text-blue-700 hover:underline dark:text-blue-500">
+                                {!! __('users.forgot_password') !!} </a>
                         </div>
                         <button type="submit"
                             class="w-full mb-6 text-white bg-[#0F3B61] hover:bg-[#0c375c] focus:ring-4 focus:outline-none focus:ring-[#0F3B61] font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-[#0F3B61] dark:hover:bg-[#0c375c] dark:focus:ring-[#0F3B61]">

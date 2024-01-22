@@ -13,7 +13,7 @@
         integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <title>Notification</title>
-    {{-- <script src="{{ asset('js/app.js') }}" defer></script> --}}
+    <script src="{{ asset('js/app.js') }}" defer></script>
     <script src="{{ asset('js/flowbite.js') }}"></script>
 </head>
 
@@ -64,11 +64,12 @@
                     <h2 class="text-[#0F3B61] text-2xl font-bold mb-6">{!! __($title) !!}</h2>
                 </div>
                 <div class="min-h-screen">
+                    <x-flash-message />
                     {{ $slot }}
                 </div>
             </div>
             <footer
-                class="fixed bottom-0 left-0 w-full md:px-60 shadow text-white h-24 mt-24 opacity-90 p-4 bg-[#0F3B61] shadow md:p-6 dark:bg-gray-800">
+                class="fixed bottom-0 left-0 w-full md:px-60 shadow text-white h-24 mt-24 opacity-90 p-4 bg-[#0F3B61] md:p-6 dark:bg-gray-800">
                 <div class="py-6 px-4 md:flex md:items-center md:justify-between">
                     <span class="text-sm dark:text-gray-300 sm:text-center">&copy;
                         @php
