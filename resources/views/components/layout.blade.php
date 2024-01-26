@@ -1,4 +1,7 @@
-@props(['title' => ''])
+@props(['title' => '', 'active' => 'paiements'])
+@php
+    $active_class = 'bg-blue-700 text-blue-700 md:dark:text-blue-500';
+@endphp
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -19,14 +22,14 @@
 
 <body>
     <main class="bg-white flex flex-row">
+
         <div class="grow">
             <nav class="bg-white sm:px-4 dark:bg-gray-900 fixed w-full z-20 top-0 left-0 border-b border-gray-200 dark:border-gray-600">
                 <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-                    <a href="/" class="flex items-center space-x-3 rtl:space-x-reverse">
-                        <img class="w-32" src="{{ asset('images/logo.png') }}" class="mr-3 h-6 sm:h-9" alt="waly Logo">
-
+                    <a href="/" class="flex items-center space-x-3 rtl:space-x-reverse no-underline">
+                        <img class="w-32" src="{{ asset('images/logo.png') }}" class="mr-3 h-6 sm:h-9" alt="waly Logo"><br>
+                        <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Gestionnaire de notifications</span>
                     </a>
-                    <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Gestionnaire de notifications</span>
                     @auth
                         <div class="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
                             <button type="button" class="flex text-sm bg-gray-800 rounded-full md:me-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
@@ -61,7 +64,17 @@
                                 </svg>
                             </button>
                         </div>
-                    @endauth
+
+                        <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-user">
+                            <ul class="flex flex-col font-medium md:p-0 border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
+                                <li>
+                                    <a href="/" class="<?= $active === 'paiements' ? $active_class : 'text-gray-900' ?> block no-underline py-2 px-3 mt-2 rounded md:bg-transparent md:p-0 " aria-current="page">Paiements</a>
+                                <li>
+                                    <a href="/members" class="<?= $active === 'members' ? $active_class : 'text-gray-900' ?> block no-underline py-2 px-3 mt-2 rounded md:bg-transparent md:p-0">Membres</a>
+                                </li>
+                            </ul>
+                        </div>
+                      @endauth
                 </div>
             </nav>
 

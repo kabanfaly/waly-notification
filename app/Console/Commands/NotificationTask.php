@@ -61,7 +61,7 @@ class NotificationTask extends Command
     {
         Log::info("Sending mails for new payments --> Start");
 
-        $payments_notifications_ids = DB::table('VbE_custom_payments_notifications')->select('entry_id');
+        $payments_notifications_ids = DB::table('VbE_custom_payments_notifications')->select('entry_id')->where('type', '=', 'payment');
         $notifications = DB::table('VbE_view_wpforms_payments_done')
             ->whereNotIn('entry_id', $payments_notifications_ids)
             ->limit(5)
@@ -89,7 +89,12 @@ class NotificationTask extends Command
             }
 
             DB::table('VbE_custom_payments_notifications')->insert([
-                ['entry_id' => $notification->entry_id, 'member_mail_sent_at' => $member_mail_sent_at, 'walynw_mail_sent_at' => $walynw_mail_sent_at],
+                [
+                    'entry_id' => $notification->entry_id,
+                    'type' => 'payment',
+                    'member_mail_sent_at' => $member_mail_sent_at,
+                    'walynw_mail_sent_at' => $walynw_mail_sent_at
+                ],
             ]);
         }
         Log::info("Sending mails for new payments --> End");
@@ -101,6 +106,7 @@ class NotificationTask extends Command
 
         $payments_notifications_ids = DB::table('VbE_custom_payments_notifications')
             ->select('entry_id')
+            ->where('type', '=', 'payment')
             ->where('member_mail_sent_at', '=', null);
 
         $notifications = DB::table('VbE_view_wpforms_payments_done')
@@ -132,6 +138,7 @@ class NotificationTask extends Command
 
         $payments_notifications_ids = DB::table('VbE_custom_payments_notifications')
             ->select('entry_id')
+            ->where('type', '=', 'payment')
             ->where('walynw_mail_sent_at', '=', null);
 
         $notifications = DB::table('VbE_view_wpforms_payments_done')
