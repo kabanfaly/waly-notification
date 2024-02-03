@@ -176,8 +176,8 @@ class MailNotificationTask extends Command
                         );
                     $totalSent++;
                 }
+                Log::info("Sending mails for new payments --> End");
             }
-            Log::info("Sending mails for new payments --> End");
         }
     }
 
