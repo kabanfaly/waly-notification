@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\MemberController;
 use Illuminate\Support\Facades\Route;
@@ -17,8 +17,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::post('/users/authenticate', [UserController::class , 'authenticate']);
-Route::get('/', [NotificationController::class , 'index'])->middleware('auth');
+Route::get('/', [PaymentController::class , 'index'])->middleware('auth');
 Route::get('/members', [MemberController::class , 'index'])->middleware('auth');
+Route::get('/transactions', [MemberController::class , 'membersTransactions'])->middleware('auth');
 Route::get('/login', [UserController::class , 'login'])->name('login')->middleware('guest');
 Route::get('/logout', [UserController::class, 'logout'])->middleware('auth');
 

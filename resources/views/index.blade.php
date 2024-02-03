@@ -31,11 +31,14 @@
                 </tr>
             </thead>
             <tbody>
+                @php
+                    $num = 1;
+                @endphp
                 @foreach ($payments as $payment)
                     <tr
                         class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                         <td class="py-4 px-6">
-                            {{ $payment->entry_id }}
+                            {{ $num++ }}
                         </td>
                         <th scope="row"
                             class="flex items-center py-4 px-6 text-gray-900 whitespace-nowrap dark:text-white">
@@ -69,7 +72,7 @@
             </tbody>
         </table>
         <div class="mx-auto pb-10 pt-10">
-            {{ $payments->links() }}
+            {{ $payments->links() }} Total : {{ $payments->total() }}
         </div>
     </div>
 

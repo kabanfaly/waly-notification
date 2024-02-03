@@ -9,29 +9,24 @@ use Illuminate\Support\Facades\Mail;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
-class NotificationTask extends Command
+class PaymentNotificationTask extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'notification:task';
+    protected $signature = 'payment_notification:task';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Payments notification';
 
     protected $isProduction;
 
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
     public function __construct()
     {
         parent::__construct();
@@ -46,7 +41,6 @@ class NotificationTask extends Command
      */
     public function handle()
     {
-
         $this->sendNewNotifications();
         $this->updateMemberNotifications();
         $this->updateWalyNotifications();
@@ -61,9 +55,9 @@ class NotificationTask extends Command
     {
         Log::info("Sending mails for new payments --> Start");
 
-        $payments_notifications_ids = DB::table('VbE_custom_payments_notifications')->select('entry_id')->where('type', '=', 'payment');
+        $payments_notifications_ids = DB::table('VbE_custom_payments_notifications')->select('payment_id');
         $notifications = DB::table('VbE_view_wpforms_payments_done')
-            ->whereNotIn('entry_id', $payments_notifications_ids)
+            ->whereNotIn('id', $payments_notifications_ids)
             ->limit(5)
             ->get();
 
@@ -90,8 +84,7 @@ class NotificationTask extends Command
 
             DB::table('VbE_custom_payments_notifications')->insert([
                 [
-                    'entry_id' => $notification->entry_id,
-                    'type' => 'payment',
+                    'payment_id' => $notification->id,
                     'member_mail_sent_at' => $member_mail_sent_at,
                     'walynw_mail_sent_at' => $walynw_mail_sent_at
                 ],
@@ -105,12 +98,11 @@ class NotificationTask extends Command
         Log::info("Resending mails to member for new payments --> Start");
 
         $payments_notifications_ids = DB::table('VbE_custom_payments_notifications')
-            ->select('entry_id')
-            ->where('type', '=', 'payment')
-            ->where('member_mail_sent_at', '=', null);
+            ->select('payment_id')
+            ->where('member_mail_sent_at', null);
 
         $notifications = DB::table('VbE_view_wpforms_payments_done')
-            ->whereIn('entry_id', $payments_notifications_ids)
+            ->whereIn('id', $payments_notifications_ids)
             ->limit(5)
             ->get();
 
@@ -126,7 +118,7 @@ class NotificationTask extends Command
             }
 
             DB::table('VbE_custom_payments_notifications')
-                ->where('entry_id', '=', $notification->entry_id)
+                ->where('payment_id', $notification->id)
                 ->update(['member_mail_sent_at' => $member_mail_sent_at]);
         }
         Log::info("Resending mails to members for new payments --> End");
@@ -137,12 +129,11 @@ class NotificationTask extends Command
         Log::info("Resending mails to waly for new payments --> Start");
 
         $payments_notifications_ids = DB::table('VbE_custom_payments_notifications')
-            ->select('entry_id')
-            ->where('type', '=', 'payment')
-            ->where('walynw_mail_sent_at', '=', null);
+            ->select('payment_id')
+            ->where('walynw_mail_sent_at', null);
 
         $notifications = DB::table('VbE_view_wpforms_payments_done')
-            ->whereIn('entry_id', $payments_notifications_ids)
+            ->whereIn('id', $payments_notifications_ids)
             ->limit(5)
             ->get();
 
@@ -159,7 +150,7 @@ class NotificationTask extends Command
 
 
             DB::table('VbE_custom_payments_notifications')
-                ->where('entry_id', '=', $notification->entry_id)
+                ->where('payment_id', $notification->id)
                 ->update(['walynw_mail_sent_at' => $walynw_mail_sent_at]);
         }
         Log::info("Resending mails to waly for new payments --> End");

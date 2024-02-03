@@ -72,6 +72,9 @@
                                 <li>
                                     <a href="/members" class="<?= $active === 'members' ? $active_class : 'text-gray-900' ?> block no-underline py-2 px-3 mt-2 rounded md:bg-transparent md:p-0">Membres</a>
                                 </li>
+                                <li>
+                                    <a href="/transactions" class="<?= $active === 'transactions' ? $active_class : 'text-gray-900' ?> block no-underline py-2 px-3 mt-2 rounded md:bg-transparent md:p-0">Transactions</a>
+                                </li>
                             </ul>
                         </div>
                       @endauth

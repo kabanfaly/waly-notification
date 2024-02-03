@@ -1,33 +1,60 @@
 <?php
 
 namespace App\Http\Controllers;
+use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
 
-use Illuminate\Http\Request;
 
 class MemberController extends Controller
 {
     public function index()
     {
-        $search = request('search');
         $members = DB::table('VbE_view_wpforms_members')
-            ->leftJoin('VbE_custom_payments_notifications',
-                'VbE_custom_payments_notifications.entry_id', '=',
-                'VbE_view_wpforms_members.entry_id')
-            ->select('VbE_view_wpforms_members.*',
-                'VbE_custom_payments_notifications.member_mail_sent_at',
-                'VbE_custom_payments_notifications.walynw_mail_sent_at')
-            ->where('VbE_custom_payments_notifications.type', "=", 'member')
-            ->where('VbE_view_wpforms_members.name', 'like', '%' . $search . '%')
-            ->orWhere('VbE_view_wpforms_members.email', 'like', '%' . $search . '%')
-            ->orderBy('VbE_view_wpforms_members.date_created_gmt', 'desc')
+            ->select('entry_id', 'name', 'phone', 'email')
+            ->where(function (Builder $query) {
+                $query->orWhere('VbE_view_wpforms_members.name', 'like', '%' . request('search') . '%')
+                      ->orWhere('VbE_view_wpforms_members.email', 'like', '%' . request('search') . '%');
+            })
+            ->distinct()
+            ->orderBy('name', 'asc')
             ->paginate(20);
 
         return view(
             'members',
             [
-                'payments' => $members,
-                'search' => $search,
+                'members' => $members,
+                'search' => request('search'),
+            ]
+        );
+    }
+
+    public function membersTransactions()
+    {
+        $status = request('status');
+        $statusWhere = strlen($status) == 0 ? ['VbE_view_wpforms_members.status', '<>', $status] : ['VbE_view_wpforms_members.status', '=',  $status];
+        $members = DB::table('VbE_view_wpforms_members')
+            ->select('VbE_view_wpforms_members.*',
+                    'VbE_custom_payments_history.type',
+                    'VbE_custom_payments_history.member_mail_sent_at',
+                    'VbE_custom_payments_history.walynw_mail_sent_at')
+            ->leftJoin('VbE_custom_payments_history',
+                'VbE_custom_payments_history.payment_id', '=',
+                'VbE_view_wpforms_members.id')
+            ->where([$statusWhere])
+            ->where(function (Builder $query) {
+                $query->orWhere('VbE_view_wpforms_members.name', 'like', '%' . request('search') . '%')
+                      ->orWhere('VbE_view_wpforms_members.email', 'like', '%' . request('search') . '%');
+            })
+            ->orderBy('name', 'asc')
+            ->paginate(20);
+
+        return view(
+            'members_transactions',
+            [
+                'members' => $members,
+                'search' => request('search'),
+                'status' => $status,
+                'statuses' => ['pending', 'completed', 'processed']
             ]
         );
     }
