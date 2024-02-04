@@ -45,6 +45,9 @@
                     <th scope="col" class="py-3 px-6">
                         Date
                     </th>
+                    <th scope="col" class="py-3 px-6">
+                        Description
+                    </th>
                     <th scope="col" class="py-3 px-6 text-orange-500">
                         Date d'envoi membre
                     </th>
@@ -95,6 +98,15 @@
                         </td>
                         <td class="py-4 px-6">
                             {{ $member->date_updated_gmt }}
+                        </td>
+                         <td class="py-4 px-6 text-xs text-blue-400">
+                            @if ($member->type === 'pending')
+                                <span>Notification de rappel de paiement en attente</span>
+                            @elseif ($member->type === 'completed' || $member->type === 'processed')
+                                <span>Notification de transaction complétée</span>
+                            @else
+                                <span></span>
+                            @endif
                         </td>
                         <td class="py-4 px-6">
                             {{ $member->member_mail_sent_at }}
