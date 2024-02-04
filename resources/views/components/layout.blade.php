@@ -68,11 +68,11 @@
                         <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-user">
                             <ul class="flex flex-col font-medium md:p-0 border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
                                 <li>
-                                    <a href="/members" class="<?= $active === 'members' ? $active_class : 'text-gray-900' ?> block no-underline py-2 px-3 mt-2 rounded md:bg-transparent md:p-0">Membres</a>
+                                    <a href="/" class="<?= $active === 'members' ? $active_class : 'text-gray-900' ?> block no-underline py-2 px-3 mt-2 rounded md:bg-transparent md:p-0">Membres</a>
                                 </li>
-                                <li>
+                                {{-- <li>
                                     <a href="/" class="<?= $active === 'paiements' ? $active_class : 'text-gray-900' ?> block no-underline py-2 px-3 mt-2 rounded md:bg-transparent md:p-0 " aria-current="page">Paiements</a>
-                                </li>
+                                </li> --}}
                                 <li>
                                     <a href="/transactions" class="<?= $active === 'transactions' ? $active_class : 'text-gray-900' ?> block no-underline py-2 px-3 mt-2 rounded md:bg-transparent md:p-0">Transactions</a>
                                 </li>

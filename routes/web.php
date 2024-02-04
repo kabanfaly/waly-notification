@@ -17,8 +17,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::post('/users/authenticate', [UserController::class , 'authenticate']);
-Route::get('/', [PaymentController::class , 'index'])->middleware('auth');
-Route::get('/members', [MemberController::class , 'index'])->middleware('auth');
+// Route::get('/', [PaymentController::class , 'index'])->middleware('auth');
+Route::get('/', [MemberController::class , 'index'])->middleware('auth');
 Route::get('/transactions', [MemberController::class , 'membersTransactions'])->middleware('auth');
 Route::get('/login', [UserController::class , 'login'])->name('login')->middleware('guest');
 Route::get('/logout', [UserController::class, 'logout'])->middleware('auth');
