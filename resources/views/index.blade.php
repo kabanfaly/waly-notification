@@ -68,7 +68,7 @@
                             {{ $payment->transaction_id }}
                         </td>
                         <td class="py-4 px-6">
-                            {{ $payment->date_created_gmt }}
+                            {{ $payment->date_updated_gmt }}
                         </td>
                         <td class="py-4 px-6">
                             {{ $payment->member_mail_sent_at }}
