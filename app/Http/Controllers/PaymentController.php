@@ -23,7 +23,7 @@ class PaymentController extends Controller
             ->paginate(20);
 
         return view(
-            'index',
+            'payment',
             [
                 'payments' => $payments,
                 'search' => $search,

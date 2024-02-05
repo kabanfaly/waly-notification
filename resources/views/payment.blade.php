@@ -1,6 +1,6 @@
 <x-layout title="Paiements : Statut des e-mails envoyés" active="paiements">
     <div class="overflow-x-auto relative shadow-md sm:rounded-lg md:ml-10 md:mr-10 text-sm text-left text-gray-500 dark:text-gray-400">
-        <x-table-search action="/" :search="$search" />
+        <x-table-search action="/payments" :search="$search" />
         <table class="w-full">
             <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr>

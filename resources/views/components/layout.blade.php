@@ -46,12 +46,12 @@
                                 <ul class="py-2" aria-labelledby="user-menu-button">
                                     <li>
                                         <a href="/account/profile"
-                                            class="block py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
+                                            class="no-underline block py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
                                             <i class="fa-solid fa-user mr-2"></i> {!! __('users.my_account') !!}
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="/logout" class="block py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
+                                        <a href="/logout" class="no-underline block py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
                                             <i class="fa-solid fa-arrow-right-from-bracket mr-2"></i>Déconnexion
                                         </a>
                                     </li>
