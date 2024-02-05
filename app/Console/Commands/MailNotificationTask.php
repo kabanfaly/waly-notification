@@ -92,12 +92,12 @@ class MailNotificationTask extends Command
 
         $notifications = DB::table('VbE_view_wpforms_members')
             ->select('VbE_view_wpforms_members.*',
-                'VbE_custom_payments_history.payment_id',
-                'VbE_custom_payments_history.type',
-                'VbE_custom_payments_history.member_mail_sent_at',
-                'VbE_custom_payments_history.walynw_mail_sent_at')
-            ->leftJoin('VbE_custom_payments_history',
-                'VbE_custom_payments_history.payment_id', '=',
+                'VbE_custom_payments_notifications.payment_id',
+                'VbE_custom_payments_notifications.type',
+                'VbE_custom_payments_notifications.member_mail_sent_at',
+                'VbE_custom_payments_notifications.walynw_mail_sent_at')
+            ->leftJoin('VbE_custom_payments_notifications',
+                'VbE_custom_payments_notifications.payment_id', '=',
                 'VbE_view_wpforms_members.id')
             ->orderBy('VbE_view_wpforms_members.date_created_gmt', 'desc')
             ->get();
@@ -114,12 +114,12 @@ class MailNotificationTask extends Command
                 $member_mail = $this->isProduction ? $notification->email : config('app.testmail');
                 $walymail = $this->isProduction ? config('app.walynw_email') : config('app.testmail');
 
-                if ($notification->type == null) { // new notification: insertion in VbE_custom_payments_history table
+                if ($notification->type == null) { // new notification: insertion in VbE_custom_payments_notifications table
                     Log::info("New Notification");
                     $this->sendMailToMember($notification, $body, $member_mail, $member_mail_sent_at);
                     $this->sendMailToWaly($notification, $body, $walymail, $walynw_mail_sent_at);
 
-                    DB::table('VbE_custom_payments_history')->insert([
+                    DB::table('VbE_custom_payments_notifications')->insert([
                         [
                             'payment_id' => $notification->id,
                             'type' => $status,
@@ -135,7 +135,7 @@ class MailNotificationTask extends Command
                     $this->sendMailToMember($notification, $body, $member_mail, $member_mail_sent_at);
                     $this->sendMailToWaly($notification, $body, $walymail, $walynw_mail_sent_at);
 
-                    DB::table('VbE_custom_payments_history')
+                    DB::table('VbE_custom_payments_notifications')
                         ->where('payment_id', $notification->id)
                         ->update(
                             [
@@ -151,7 +151,7 @@ class MailNotificationTask extends Command
 
                     $this->sendMailToMember($notification, $body, $member_mail, $member_mail_sent_at);
 
-                    DB::table('VbE_custom_payments_history')
+                    DB::table('VbE_custom_payments_notifications')
                         ->where('payment_id', $notification->id)
                         ->update(
                             [
@@ -166,7 +166,7 @@ class MailNotificationTask extends Command
 
                     $this->sendMailToWaly($notification, $body, $walymail, $walynw_mail_sent_at);
 
-                    DB::table('VbE_custom_payments_history')
+                    DB::table('VbE_custom_payments_notifications')
                         ->where('payment_id', $notification->id)
                         ->update(
                             [

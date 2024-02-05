@@ -12,10 +12,10 @@ class PaymentController extends Controller
         $search = request('search');
         $payments = DB::table('VbE_view_wpforms_payments_done')
             ->select('VbE_view_wpforms_payments_done.*',
-                'VbE_custom_payments_history.member_mail_sent_at',
-                'VbE_custom_payments_history.walynw_mail_sent_at')
-            ->leftJoin('VbE_custom_payments_history',
-                'VbE_custom_payments_history.payment_id', '=',
+                'VbE_custom_payments_notifications.member_mail_sent_at',
+                'VbE_custom_payments_notifications.walynw_mail_sent_at')
+            ->leftJoin('VbE_custom_payments_notifications',
+                'VbE_custom_payments_notifications.payment_id', '=',
                 'VbE_view_wpforms_payments_done.id')
             ->where('VbE_view_wpforms_payments_done.name', 'like', '%' . $search . '%')
             ->orWhere('VbE_view_wpforms_payments_done.email', 'like',  '%' . $search . '%')

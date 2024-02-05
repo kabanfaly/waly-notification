@@ -37,11 +37,11 @@ class MemberController extends Controller
         $showMemberInfo = false;
         $members = DB::table('VbE_view_wpforms_members')
             ->select('VbE_view_wpforms_members.*',
-                    'VbE_custom_payments_history.type',
-                    'VbE_custom_payments_history.member_mail_sent_at',
-                    'VbE_custom_payments_history.walynw_mail_sent_at')
-            ->leftJoin('VbE_custom_payments_history',
-                'VbE_custom_payments_history.payment_id', '=',
+                    'VbE_custom_payments_notifications.type',
+                    'VbE_custom_payments_notifications.member_mail_sent_at',
+                    'VbE_custom_payments_notifications.walynw_mail_sent_at')
+            ->leftJoin('VbE_custom_payments_notifications',
+                'VbE_custom_payments_notifications.payment_id', '=',
                 'VbE_view_wpforms_members.id')
             ->where([$statusWhere]);
 

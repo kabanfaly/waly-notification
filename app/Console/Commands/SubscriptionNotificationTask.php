@@ -45,7 +45,7 @@ class SubscriptionNotificationTask extends Command
 
     private function notifyPendingTransactions() {
         Log::info("Sending mails for uncomplete transactions --> Start");
-        $payments_history_ids = DB::table('VbE_custom_payments_history')->select('payment_id')
+        $payments_history_ids = DB::table('VbE_custom_payments_notifications')->select('payment_id')
             ->where('type', 'pending');
 
         $membersWithPendingTransactions = DB::table('VbE_view_wpforms_members')
@@ -75,7 +75,7 @@ class SubscriptionNotificationTask extends Command
                 Log::info("Walynw Mail sent to {$member->email}");
             }
 
-            DB::table('VbE_custom_payments_history')->insert([
+            DB::table('VbE_custom_payments_notifications')->insert([
                 [
                     'payment_id' => $member->id,
                     'type' => 'pending',
