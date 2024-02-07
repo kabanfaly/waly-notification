@@ -90,6 +90,7 @@ class MailNotificationTask extends Command
     {
         Log::info("Sending mails for new payments --> Start");
 
+        // Join on payment id
         $notifications = DB::table('VbE_view_wpforms_members')
             ->select('VbE_view_wpforms_members.*',
                 'VbE_custom_payments_notifications.payment_id',

@@ -1,5 +1,5 @@
 @php
-    $inputClass = 'rounded-none rounded-r-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-purple-500 focus:border-purple-500 block flex-1 min-w-0 w-full text-sm border-gray-300 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-purple-500 dark:focus:border-purple-500';
+    $inputClass = 'rounded-none rounded-r-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm border-gray-300 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500';
 @endphp
 <x-layout title="Historique des transactions" active="transactions">
     <div class="overflow-x-auto relative shadow-md sm:rounded-lg md:ml-10 md:mr-10 text-sm text-left text-gray-500 dark:text-gray-400">
@@ -15,6 +15,18 @@
                                     $selected = $status == $s ? 'selected' : '';
                                 @endphp
                                 <option value="{{ $s }}" {{ $selected }}>{!! __('notification.' . $s) !!}</option>;
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="flex mb-4">
+                        <span class="mt-2">A partir de &nbsp;</span>
+                        <x-fa-icon color="gray" icon="calendar" />
+                        <select id="year" name="year" class="{{ $inputClass }}">
+                            @foreach ($years as $y)
+                                @php
+                                    $selected = $year == $y ? 'selected' : '';
+                                @endphp
+                                <option value="{{ $y }}" {{ $selected }}>{!!  $y !!}</option>;
                             @endforeach
                         </select>
                     </div>
@@ -195,7 +207,7 @@
                         <td class="py-4 px-6">
                             {{ $member->transaction_id }}
                         </td>
-                        <td class="py-4 px-6">
+                        <td class="py-4 px-6 font-bold">
                             {{ $member->date_updated_gmt }}
                         </td>
                          <td class="py-4 px-6 text-xs text-blue-400">

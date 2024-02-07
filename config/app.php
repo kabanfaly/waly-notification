@@ -189,4 +189,10 @@ return [
     'walynw_email' => env('WALY_NETWORK_EMAIL', 'info@walynetwork.com'),
 
     'testmail' => env('TEST_MAIL', 'info@walynetwork.com'),
+
+    'date_format' => 'd/m/Y',
+    'db_date_format' => 'Y-m-d',
+    'db_datetime_format' => 'Y-m-d H:i:s',
+    'datetime_format' => 'd/m/Y H:i:s',
+    'js_date_format' => 'dd/mm/yyyy',
 ];
