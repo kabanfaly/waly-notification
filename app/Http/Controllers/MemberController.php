@@ -15,12 +15,12 @@ class MemberController extends Controller
         }
         self::saveRequestsToSession('search');
 
-        $members = DB::table('VbE_view_wpforms_members')
+        $members = DB::table('VbE_view_wpforms_members_payments')
             ->select('entry_id', 'name', 'phone', 'email')
             ->where(function (Builder $query) {
-                $query->orWhere('VbE_view_wpforms_members.name', 'like', '%' . session()->get('search') . '%')
-                      ->orWhere('VbE_view_wpforms_members.email', 'like', '%' . session()->get('search') . '%')
-                      ->orWhere('VbE_view_wpforms_members.entry_id', request('entry_id'));
+                $query->orWhere('VbE_view_wpforms_members_payments.name', 'like', '%' . session()->get('search') . '%')
+                      ->orWhere('VbE_view_wpforms_members_payments.email', 'like', '%' . session()->get('search') . '%')
+                      ->orWhere('VbE_view_wpforms_members_payments.entry_id', request('entry_id'));
             })
             ->distinct()
             ->orderBy('name', 'asc')
@@ -60,17 +60,17 @@ class MemberController extends Controller
 
         $status = session()->get('status');
 
-        $statusWhere = strlen($status) == 0 ? ['VbE_view_wpforms_members.status', '<>', $status] : ['VbE_view_wpforms_members.status', '=',  $status];
+        $statusWhere = strlen($status) == 0 ? ['VbE_view_wpforms_members_payments.status', '<>', $status] : ['VbE_view_wpforms_members_payments.status', '=',  $status];
         $memberInfo = [];
         $showMemberInfo = false;
-        $members = DB::table('VbE_view_wpforms_members')
-            ->select('VbE_view_wpforms_members.*',
+        $members = DB::table('VbE_view_wpforms_members_payments')
+            ->select('VbE_view_wpforms_members_payments.*',
                     'VbE_custom_payments_notifications.type',
                     'VbE_custom_payments_notifications.member_mail_sent_at',
                     'VbE_custom_payments_notifications.walynw_mail_sent_at')
             ->leftJoin('VbE_custom_payments_notifications',
                 'VbE_custom_payments_notifications.payment_id', '=',
-                'VbE_view_wpforms_members.id')
+                'VbE_view_wpforms_members_payments.id')
             ->where([$statusWhere]);
 
         if (session()->get('year'))
@@ -86,18 +86,18 @@ class MemberController extends Controller
             $memberInfo = DB::table('VbE_view_wpforms_members_details')
                 ->where('entry_id', session()->get('entry_id'))
                 ->get();
-            $members = $members->where('VbE_view_wpforms_members.entry_id', session()->get('entry_id'));
+            $members = $members->where('VbE_view_wpforms_members_payments.entry_id', session()->get('entry_id'));
         } // else apply search
         else {
             $members = $members
                 ->where(function (Builder $query) {
-                    $query->orWhere('VbE_view_wpforms_members.name', 'like', '%' . session()->get('search') . '%')
-                        ->orWhere('VbE_view_wpforms_members.email', 'like', '%' . session()->get('search') . '%');
+                    $query->orWhere('VbE_view_wpforms_members_payments.name', 'like', '%' . session()->get('search') . '%')
+                        ->orWhere('VbE_view_wpforms_members_payments.email', 'like', '%' . session()->get('search') . '%');
                 });
         }
         $members = $members
-            ->orderBy('name')
             ->orderByDesc('date_updated_gmt')
+            ->orderBy('name')
             ->paginate(20);
 
 

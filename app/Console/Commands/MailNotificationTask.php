@@ -91,16 +91,16 @@ class MailNotificationTask extends Command
         Log::info("Sending mails for new payments --> Start");
 
         // Join on payment id
-        $notifications = DB::table('VbE_view_wpforms_members')
-            ->select('VbE_view_wpforms_members.*',
+        $notifications = DB::table('VbE_view_wpforms_members_payments')
+            ->select('VbE_view_wpforms_members_payments.*',
                 'VbE_custom_payments_notifications.payment_id',
                 'VbE_custom_payments_notifications.type',
                 'VbE_custom_payments_notifications.member_mail_sent_at',
                 'VbE_custom_payments_notifications.walynw_mail_sent_at')
             ->leftJoin('VbE_custom_payments_notifications',
                 'VbE_custom_payments_notifications.payment_id', '=',
-                'VbE_view_wpforms_members.id')
-            ->orderBy('VbE_view_wpforms_members.date_created_gmt', 'desc')
+                'VbE_view_wpforms_members_payments.id')
+            ->orderBy('VbE_view_wpforms_members_payments.date_created_gmt', 'desc')
             ->get();
 
         $totalSent = 0;
@@ -124,6 +124,7 @@ class MailNotificationTask extends Command
                         [
                             'payment_id' => $notification->id,
                             'type' => $status,
+                            'entry_id' => $notification->entry_id,
                             'member_mail_sent_at' => $member_mail_sent_at,
                             'walynw_mail_sent_at' => $walynw_mail_sent_at
                         ],
