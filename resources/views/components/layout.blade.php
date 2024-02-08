@@ -71,9 +71,9 @@
                                 <li>
                                     <a href="/" class="<?= $active === 'members' ? $active_class : 'text-gray-900' ?> block no-underline py-2 px-3 mt-2 rounded md:bg-transparent md:p-0">Membres</a>
                                 </li>
-                                {{-- <li>
-                                    <a href="/" class="<?= $active === 'paiements' ? $active_class : 'text-gray-900' ?> block no-underline py-2 px-3 mt-2 rounded md:bg-transparent md:p-0 " aria-current="page">Paiements</a>
-                                </li> --}}
+                                <li>
+                                    <a href="/subscriptions" class="<?= $active === 'subscriptions' ? $active_class : 'text-gray-900' ?> block no-underline py-2 px-3 mt-2 rounded md:bg-transparent md:p-0 " aria-current="page">Cotisations</a>
+                                </li>
                                 <li>
                                     <a href="/transactions" class="<?= $active === 'transactions' ? $active_class : 'text-gray-900' ?> block no-underline py-2 px-3 mt-2 rounded md:bg-transparent md:p-0">Transactions</a>
                                 </li>

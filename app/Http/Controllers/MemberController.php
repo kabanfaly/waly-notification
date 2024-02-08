@@ -7,7 +7,12 @@ use Illuminate\Support\Carbon;
 
 class MemberController extends Controller
 {
-    public function index()
+
+    /**
+     * Members
+     */
+
+    public function members()
     {
         if (request('clear'))
         {
@@ -15,26 +20,82 @@ class MemberController extends Controller
         }
         self::saveRequestsToSession('search');
 
-        $members = DB::table('VbE_view_wpforms_members_payments')
-            ->select('entry_id', 'name', 'phone', 'email')
+        $members = DB::table('VbE_view_wpforms_members')
             ->where(function (Builder $query) {
-                $query->orWhere('VbE_view_wpforms_members_payments.name', 'like', '%' . session()->get('search') . '%')
-                      ->orWhere('VbE_view_wpforms_members_payments.email', 'like', '%' . session()->get('search') . '%')
-                      ->orWhere('VbE_view_wpforms_members_payments.entry_id', request('entry_id'));
+                $query->orWhere('VbE_view_wpforms_members.name', 'like', '%' . session()->get('search') . '%')
+                      ->orWhere('VbE_view_wpforms_members.email', 'like', '%' . session()->get('search') . '%')
+                      ->orWhere('VbE_view_wpforms_members.entry_id', request('entry_id'));
             })
-            ->distinct()
             ->orderBy('name', 'asc')
             ->paginate(20);
 
         return view(
             'members',
             [
-                'first_day' => Carbon::createFromDate(date('Y'), 1, 1),
                 'members' => $members,
                 'search' => session()->get('search')
             ]
         );
     }
+
+    /**
+     * Members subscriptions
+     */
+
+    public function membersSubscriptions()
+    {
+        $currentYear = date('Y');
+        if (request('clear'))
+        {
+            session()->put('search', '');
+            session()->put('year', '');
+        }
+
+        self::saveRequestsToSession('year');
+        self::saveRequestsToSession('search');
+
+        if (!request('year')) {
+            session()->put('year', $currentYear);
+        }
+
+        $members = DB::table('VbE_view_wpforms_members')
+            ->select('VbE_view_wpforms_members.*',
+                'VbE_custom_subscriptions_notifications.member_mail_sent_at',
+                'VbE_custom_subscriptions_notifications.walynw_mail_sent_at'
+                )
+            ->leftJoin('VbE_custom_subscriptions_notifications',
+                'VbE_custom_subscriptions_notifications.entry_id', '=',
+                'VbE_view_wpforms_members.entry_id')
+            ->where(function (Builder $query) {
+                $query->orWhere('VbE_view_wpforms_members.name', 'like', '%' . session()->get('search') . '%')
+                      ->orWhere('VbE_view_wpforms_members.email', 'like', '%' . session()->get('search') . '%')
+                      ->orWhere('VbE_view_wpforms_members.entry_id', request('entry_id'));
+            });
+
+        if (session()->get('year'))
+        {
+            $firstDayOfYear = Carbon::createFromDate(session()->get('year'), 1, 1);
+            $lastDayOfYear = Carbon::createFromDate(session()->get('year'), 12, 31);
+            $members = $members
+                ->whereNotNull('VbE_custom_subscriptions_notifications.member_mail_sent_at')
+                ->whereBetween('VbE_custom_subscriptions_notifications.member_mail_sent_at', [$firstDayOfYear, $lastDayOfYear]);
+        }
+
+        $members = $members->orderBy('name', 'asc')
+            ->paginate(20);
+
+        return view(
+            'members_subscriptions',
+            [
+                'members' => $members,
+                'year' => session()->get('year'),
+                'years' => $this->years(),
+                'search' => session()->get('search')
+            ]
+        );
+    }
+
+
 
     private static function saveRequestsToSession($requestName)
     {
@@ -43,6 +104,10 @@ class MemberController extends Controller
             session()->put($requestName, request($requestName));
         }
     }
+
+    /**
+     * Members transactions
+     */
     public function membersTransactions()
     {
         self::saveRequestsToSession('status');
@@ -52,10 +117,10 @@ class MemberController extends Controller
 
         if (request('clear'))
         {
-            session()->put('status', request(''));
-            session()->put('search', request(''));
-            session()->put('entry_id', request(''));
-            session()->put('year', request(''));
+            session()->put('status', '');
+            session()->put('search', '');
+            session()->put('entry_id', '');
+            session()->put('year', '');
         }
 
         $status = session()->get('status');
@@ -100,14 +165,6 @@ class MemberController extends Controller
             ->orderBy('name')
             ->paginate(20);
 
-
-        $years = [];
-        $current_year = date('Y');
-        for ($i = 2020; $i <= $current_year; $i++)
-        {
-            $years[] = $i;
-        }
-
         return view(
             'members_transactions',
             [
@@ -117,9 +174,20 @@ class MemberController extends Controller
                 'year' => session()->get('year'),
                 'status' => $status,
                 'memberInfo' => $memberInfo,
-                'years' => $years,
+                'years' => $this->years(),
                 'statuses' => ['pending', 'completed', 'processed']
             ]
         );
+    }
+
+    private function years()
+    {
+        $years = [];
+        $current_year = date('Y');
+        for ($i = 2020; $i <= $current_year; $i++)
+        {
+            $years[] = $i;
+        }
+        return $years;
     }
 }

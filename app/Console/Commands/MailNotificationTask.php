@@ -79,7 +79,6 @@ class MailNotificationTask extends Command
     public function handle()
     {
         $this->sendNewNotifications();
-
         $this->info('Notification task executed successfully!');
     }
 

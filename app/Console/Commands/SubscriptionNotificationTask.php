@@ -44,13 +44,19 @@ class SubscriptionNotificationTask extends Command
     }
 
     private function notifyPendingTransactions() {
-        Log::info("Sending mails for uncomplete transactions --> Start");
-        $payments_history_ids = DB::table('VbE_custom_payments_notifications')->select('payment_id')
-            ->where('type', 'pending');
-
+        Log::info("Reminder: Sending mails subscription --> Start");
+        $firstDayOfYear = Carbon::createFromDate(date('Y'), 1, 1);
+        $lastDayOfYear = Carbon::createFromDate(date('Y'), 12, 31);
+        $subcriptionNotificationArray = DB::table('VbE_custom_subscriptions_notifications')->select('entry_id')
+            ->whereNotNull('member_mail_sent_at')
+            ->whereBetween('member_mail_sent_at', [$firstDayOfYear, $lastDayOfYear])
+            ->get();
+        $subcriptionNotificationIds = [];
+        foreach($subcriptionNotificationArray as $entryId) {
+            $subcriptionNotificationIds[] = $entryId->entry_id;
+        }
         $membersWithPendingTransactions = DB::table('VbE_view_wpforms_members')
-            ->where('status', 'pending')
-            ->whereNotIn('id', $payments_history_ids)
+            ->whereNotIn('entry_id', ($subcriptionNotificationIds))
             ->limit(5)
             ->get();
 
@@ -62,30 +68,29 @@ class SubscriptionNotificationTask extends Command
 
             $member_mail = $this->isProduction ? $member->email : config('app.testmail');
 
-            if (Mail::to($member_mail)->send(new NotificationMail($body, 'notifications.member-pending-subscription', 'Paiement en attente')))
+            if (Mail::to($member_mail)->send(new NotificationMail($body, 'notifications.member-subscription', 'Rappel de paiement de cotisation')))
             {
                 $member_mail_sent_at = Carbon::now();
-                Log::info("Member Mail sent to {$member->email}");
+                Log::info("Subscription: Member Mail sent to {$member->email}");
             }
 
             $walymail = $this->isProduction ? config('app.walynw_email') : config('app.testmail');
-            if (Mail::to($walymail)->send(new NotificationMail($body, 'notifications.walynw-pending-subscription', 'Notification de paiement en attente')))
+            if (Mail::to($walymail)->send(new NotificationMail($body, 'notifications.walynw-subscription', 'Notification de rappel de paiement en cotisation')))
             {
                 $walynw_mail_sent_at = Carbon::now();
-                Log::info("Walynw Mail sent to {$member->email}");
+                Log::info("Subscription: Walynw Mail sent to {$member->email}");
             }
 
-            DB::table('VbE_custom_payments_notifications')->insert([
+            DB::table('VbE_custom_subscriptions_notifications')->insert([
                 [
-                    'payment_id' => $member->id,
-                    'type' => 'pending',
+                    'entry_id' => $member->entry_id,
                     'member_mail_sent_at' => $member_mail_sent_at,
                     'walynw_mail_sent_at' => $walynw_mail_sent_at
                 ],
             ]);
         }
 
-        Log::info("Sending mails for uncomplete transactions --> End");
+        Log::info("Reminder: Sending mails subscription --> End");
     }
 
     private function buidBody($notification)
@@ -93,10 +98,7 @@ class SubscriptionNotificationTask extends Command
         return [
             'name' => $notification->name,
             'email' => $notification->email,
-            'total_amount' => $notification->total_amount,
-            'date_created_gmt' => $notification->date_created_gmt,
-            'transaction_id' => $notification->transaction_id,
-            'currency' => $notification->currency,
+            'total_amount' => str_replace('&#36; ', '', $notification->amount)
         ];
     }
 }
