@@ -39,25 +39,30 @@ class SubscriptionNotificationTask extends Command
      */
     public function handle()
     {
-        $this->notifyPendingTransactions();
+        $this->notifyForSubscriptionPayments();
         $this->info('Subscription notification task executed successfully!');
     }
 
-    private function notifyPendingTransactions() {
+    private function notifyForSubscriptionPayments() {
         Log::info("Reminder: Sending mails subscription --> Start");
         $firstDayOfYear = Carbon::createFromDate(date('Y'), 1, 1);
         $lastDayOfYear = Carbon::createFromDate(date('Y'), 12, 31);
-        $subcriptionNotificationArray = DB::table('VbE_custom_subscriptions_notifications')->select('entry_id')
-            ->whereNotNull('member_mail_sent_at')
-            ->whereBetween('member_mail_sent_at', [$firstDayOfYear, $lastDayOfYear])
+
+        // Members who haven't made a payment yet for current year
+        $subcriptionNotificationArray = DB::table('VbE_custom_subscriptions_notifications')->select('VbE_custom_subscriptions_notifications.entry_id')
+            ->join('VbE_view_wpforms_members_payments', 'VbE_view_wpforms_members_payments.entry_id', '=',
+            'VbE_custom_subscriptions_notifications.entry_id')
+            ->whereBetween('VbE_custom_subscriptions_notifications.member_mail_sent_at', [$firstDayOfYear, $lastDayOfYear])
+            ->whereBetween('VbE_view_wpforms_members_payments.date_updated_gmt', [$firstDayOfYear, $lastDayOfYear])
+            ->whereIn('VbE_view_wpforms_members_payments.status', ['processed', 'completed'])
             ->get();
+
         $subcriptionNotificationIds = [];
         foreach($subcriptionNotificationArray as $entryId) {
             $subcriptionNotificationIds[] = $entryId->entry_id;
         }
         $membersWithPendingTransactions = DB::table('VbE_view_wpforms_members')
             ->whereNotIn('entry_id', ($subcriptionNotificationIds))
-            ->limit(5)
             ->get();
 
         foreach ($membersWithPendingTransactions as $member)

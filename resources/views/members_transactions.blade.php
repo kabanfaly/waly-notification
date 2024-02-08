@@ -207,7 +207,7 @@
                         <td class="py-4 px-6">
                             {{ $member->transaction_id }}
                         </td>
-                        <td class="py-4 px-6 font-bold">
+                        <td class="py-4 px-6 font-bold text-blue-900">
                             {{ $member->date_updated_gmt }}
                         </td>
                          <td class="py-4 px-6 text-xs text-blue-400">

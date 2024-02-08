@@ -2085,6 +2085,11 @@ input:checked + .toggle-bg {
   color: rgb(118 169 250 / var(--tw-text-opacity));
 }
 
+.text-blue-900 {
+  --tw-text-opacity: 1;
+  color: rgb(35 56 118 / var(--tw-text-opacity));
+}
+
 .no-underline {
   text-decoration-line: none;
 }

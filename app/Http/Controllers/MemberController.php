@@ -11,7 +11,6 @@ class MemberController extends Controller
     /**
      * Members
      */
-
     public function members()
     {
         if (request('clear'))

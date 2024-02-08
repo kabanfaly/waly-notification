@@ -18,7 +18,7 @@ define('WALY_COMPLETED_PAYMENT_MAIL_TEMPLATE', 'notifications.member-payment-con
 define('WALY_PENDING_PAYMENT_MAIL_TEMPLATE', 'notifications.member-pending-subscription');
 define('WALY_COMPLETED_PAYMENT_SUBJECT', 'Notification de paiement');
 define('WALY_PENDING_PAYMENT_SUBJECT', 'Notification de paiement en attente');
-define('MAX_SENT', 5);
+define('MAX_SENT', 500);
 
 class MailNotificationTask extends Command
 {
@@ -89,7 +89,7 @@ class MailNotificationTask extends Command
     {
         Log::info("Sending mails for new payments --> Start");
 
-        // Join on payment id
+        // Join on payment id to identify new payments or updated payments
         $notifications = DB::table('VbE_view_wpforms_members_payments')
             ->select('VbE_view_wpforms_members_payments.*',
                 'VbE_custom_payments_notifications.payment_id',
