@@ -18,7 +18,7 @@ define('WALY_COMPLETED_PAYMENT_MAIL_TEMPLATE', 'notifications.member-payment-con
 define('WALY_PENDING_PAYMENT_MAIL_TEMPLATE', 'notifications.member-pending-subscription');
 define('WALY_COMPLETED_PAYMENT_SUBJECT', 'Notification de paiement');
 define('WALY_PENDING_PAYMENT_SUBJECT', 'Notification de paiement en attente');
-define('MAX_SENT', 500);
+define('MAX_SENT', 20);
 
 class MailNotificationTask extends Command
 {
