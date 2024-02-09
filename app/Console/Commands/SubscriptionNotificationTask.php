@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
+define('SUBSCRIPTION_MAX_SENT', 20);
 
 class SubscriptionNotificationTask extends Command
 {
@@ -48,51 +49,66 @@ class SubscriptionNotificationTask extends Command
         $firstDayOfYear = Carbon::createFromDate(date('Y'), 1, 1);
         $lastDayOfYear = Carbon::createFromDate(date('Y'), 12, 31);
 
-        // Members who haven't made a payment yet for current year
-        $subcriptionNotificationArray = DB::table('VbE_custom_subscriptions_notifications')->select('VbE_custom_subscriptions_notifications.entry_id')
-            ->join('VbE_view_wpforms_members_payments', 'VbE_view_wpforms_members_payments.entry_id', '=',
-            'VbE_custom_subscriptions_notifications.entry_id')
-            ->whereBetween('VbE_custom_subscriptions_notifications.member_mail_sent_at', [$firstDayOfYear, $lastDayOfYear])
+        $firstDayOfMonth = Carbon::createFromDate(date('Y'), date('m'), 1);
+        $lastDayOfMonth = Carbon::createFromDate(date('Y'), date('m'), date('t'));
+
+        // Payments made on current month
+        $completedPaymentsArray = DB::table('VbE_view_wpforms_members_payments')->select('entry_id')
             ->whereBetween('VbE_view_wpforms_members_payments.date_updated_gmt', [$firstDayOfYear, $lastDayOfYear])
             ->whereIn('VbE_view_wpforms_members_payments.status', ['processed', 'completed'])
             ->get();
 
-        $subcriptionNotificationIds = [];
-        foreach($subcriptionNotificationArray as $entryId) {
-            $subcriptionNotificationIds[] = $entryId->entry_id;
+        $completedPaymentsIds = [];
+        foreach($completedPaymentsArray as $entryId) {
+            $completedPaymentsIds[] = $entryId->entry_id;
         }
-        $membersWithPendingTransactions = DB::table('VbE_view_wpforms_members')
-            ->whereNotIn('entry_id', ($subcriptionNotificationIds))
+
+        // Members who have not been notified yet
+        $members = DB::table('VbE_view_wpforms_members')
+            ->whereNotIn('VbE_view_wpforms_members.entry_id', ($completedPaymentsIds))
             ->get();
 
-        foreach ($membersWithPendingTransactions as $member)
+        $totalSent = 0;
+        foreach ($members as $member)
         {
-            $member_mail_sent_at = null;
-            $walynw_mail_sent_at = null;
-            $body = $this->buidBody($member);
 
-            $member_mail = $this->isProduction ? $member->email : config('app.testmail');
-
-            if (Mail::to($member_mail)->send(new NotificationMail($body, 'notifications.member-subscription', 'Rappel de paiement de cotisation')))
+            if ($totalSent != SUBSCRIPTION_MAX_SENT)
             {
-                $member_mail_sent_at = Carbon::now();
-                Log::info("Subscription: Member Mail sent to {$member->email}");
-            }
+                // Current month notification
+                $subcriptionNotification = DB::table('VbE_custom_subscriptions_notifications')
+                    ->whereBetween('member_mail_sent_at', [$firstDayOfMonth, $lastDayOfMonth])
+                    ->where('entry_id', $member->entry_id)
+                    ->count();
+                if ($subcriptionNotification == 0) {
+                    $member_mail_sent_at = null;
+                    $walynw_mail_sent_at = null;
+                    $body = $this->buidBody($member);
 
-            $walymail = $this->isProduction ? config('app.walynw_email') : config('app.testmail');
-            if (Mail::to($walymail)->send(new NotificationMail($body, 'notifications.walynw-subscription', 'Notification de rappel de paiement en cotisation')))
-            {
-                $walynw_mail_sent_at = Carbon::now();
-                Log::info("Subscription: Walynw Mail sent to {$member->email}");
-            }
+                    $member_mail = $this->isProduction ? $member->email : config('app.testmail');
 
-            DB::table('VbE_custom_subscriptions_notifications')->insert([
-                [
-                    'entry_id' => $member->entry_id,
-                    'member_mail_sent_at' => $member_mail_sent_at,
-                    'walynw_mail_sent_at' => $walynw_mail_sent_at
-                ],
-            ]);
+                    if (Mail::to($member_mail)->send(new NotificationMail($body, 'notifications.member-subscription', 'Rappel de paiement de cotisation')))
+                    {
+                        $member_mail_sent_at = Carbon::now();
+                        Log::info("Subscription: Member Mail sent to {$member->email}");
+                    }
+
+                    $walymail = $this->isProduction ? config('app.walynw_email') : config('app.testmail');
+                    if (Mail::to($walymail)->send(new NotificationMail($body, 'notifications.walynw-subscription', 'Notification de rappel de paiement en cotisation')))
+                    {
+                        $walynw_mail_sent_at = Carbon::now();
+                        Log::info("Subscription: Walynw Mail sent to {$member->email}");
+                    }
+
+                    DB::table('VbE_custom_subscriptions_notifications')->insert([
+                        [
+                            'entry_id' => $member->entry_id,
+                            'member_mail_sent_at' => $member_mail_sent_at,
+                            'walynw_mail_sent_at' => $walynw_mail_sent_at
+                        ],
+                    ]);
+                    $totalSent++;
+                }
+            }
         }
 
         Log::info("Reminder: Sending mails subscription --> End");
