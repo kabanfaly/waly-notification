@@ -14,8 +14,8 @@ define('MEMBER_PENDING_PAYMENT_MAIL_TEMPLATE', 'notifications.member-pending-sub
 define('MEMBER_COMPLETED_PAYMENT_SUBJECT', 'Confirmation de paiement');
 define('MEMBER_PENDING_PAYMENT_SUBJECT', 'Paiement en attente');
 
-define('WALY_COMPLETED_PAYMENT_MAIL_TEMPLATE', 'notifications.member-payment-confirmation');
-define('WALY_PENDING_PAYMENT_MAIL_TEMPLATE', 'notifications.member-pending-subscription');
+define('WALY_COMPLETED_PAYMENT_MAIL_TEMPLATE', 'notifications.walynw-payment-confirmation');
+define('WALY_PENDING_PAYMENT_MAIL_TEMPLATE', 'notifications.walynw-pending-subscription');
 define('WALY_COMPLETED_PAYMENT_SUBJECT', 'Notification de paiement');
 define('WALY_PENDING_PAYMENT_SUBJECT', 'Notification de paiement en attente');
 define('MAX_SENT', 20);
