@@ -93,7 +93,7 @@ class SubscriptionNotificationTask extends Command
                     }
 
                     $walymail = $this->isProduction ? config('app.walynw_email') : config('app.testmail');
-                    if (Mail::to($walymail)->send(new NotificationMail($body, 'notifications.walynw-subscription', 'Notification de rappel de paiement en cotisation')))
+                    if (Mail::to($walymail)->send(new NotificationMail($body, 'notifications.walynw-subscription', 'Notification de rappel de paiement de cotisation')))
                     {
                         $walynw_mail_sent_at = Carbon::now();
                         Log::info("Subscription: Walynw Mail sent to {$member->email}");
