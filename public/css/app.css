@@ -1252,6 +1252,10 @@ input:checked + .toggle-bg {
   margin-top: 0.75rem;
 }
 
+.mt-40 {
+  margin-top: 10rem;
+}
+
 .block {
   display: block;
 }
@@ -2647,6 +2651,22 @@ input:checked + .toggle-bg {
 }
 
 @media (min-width: 640px) {
+  .sm\:mt-40 {
+    margin-top: 10rem;
+  }
+
+  .sm\:mt-48 {
+    margin-top: 12rem;
+  }
+
+  .sm\:mt-60 {
+    margin-top: 15rem;
+  }
+
+  .sm\:mt-80 {
+    margin-top: 20rem;
+  }
+
   .sm\:flex {
     display: flex;
   }
@@ -2683,9 +2703,18 @@ input:checked + .toggle-bg {
   .sm\:text-center {
     text-align: center;
   }
+
+  .sm\:text-sm {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
 }
 
 @media (min-width: 768px) {
+  .md\:fixed {
+    position: fixed;
+  }
+
   .md\:order-1 {
     order: 1;
   }
@@ -2720,6 +2749,10 @@ input:checked + .toggle-bg {
 
   .md\:mt-40 {
     margin-top: 10rem;
+  }
+
+  .md\:mt-20 {
+    margin-top: 5rem;
   }
 
   .md\:flex {
@@ -2817,6 +2850,21 @@ input:checked + .toggle-bg {
   .md\:py-6 {
     padding-top: 1.5rem;
     padding-bottom: 1.5rem;
+  }
+
+  .md\:px-10 {
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
+  }
+
+  .md\:text-xl {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+
+  .md\:text-2xl {
+    font-size: 1.5rem;
+    line-height: 2rem;
   }
 
   :is(.dark .md\:dark\:bg-gray-900) {

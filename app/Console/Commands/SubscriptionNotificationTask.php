@@ -46,33 +46,46 @@ class SubscriptionNotificationTask extends Command
 
     private function notifyForSubscriptionPayments() {
         Log::info("Reminder: Sending mails subscription --> Start");
+
         $firstDayOfYear = Carbon::createFromDate(date('Y'), 1, 1);
         $lastDayOfYear = Carbon::createFromDate(date('Y'), 12, 31);
 
         $firstDayOfMonth = Carbon::createFromDate(date('Y'), date('m'), 1);
         $lastDayOfMonth = Carbon::createFromDate(date('Y'), date('m'), date('t'));
 
-        // Payments made on current month
-        $completedPaymentsArray = DB::table('VbE_view_wpforms_members_payments')->select('entry_id')
+        // Payments made on current year
+        $currentYearcompletedPaymentsArray = DB::table('VbE_view_wpforms_members_payments')->select('entry_id')
             ->whereBetween('VbE_view_wpforms_members_payments.date_updated_gmt', [$firstDayOfYear, $lastDayOfYear])
             ->whereIn('VbE_view_wpforms_members_payments.status', ['processed', 'completed'])
             ->get();
 
-        $completedPaymentsIds = [];
-        foreach($completedPaymentsArray as $entryId) {
-            $completedPaymentsIds[] = $entryId->entry_id;
+        $currentYearCompletedPaymentsIds = [];
+        foreach($currentYearcompletedPaymentsArray as $entryId) {
+            $currentYearCompletedPaymentsIds[] = $entryId->entry_id;
         }
 
-        // Members who have not been notified yet
+        // Members who have not been notified yet in current year
         $members = DB::table('VbE_view_wpforms_members')
-            ->whereNotIn('VbE_view_wpforms_members.entry_id', ($completedPaymentsIds))
+            ->whereNotIn('VbE_view_wpforms_members.entry_id', $currentYearCompletedPaymentsIds)
             ->get();
+
+        // notifications sent on current year
+        $currentYearSubscriptionNotificationArray = DB::table('VbE_custom_subscriptions_notifications')->select('entry_id')
+            ->whereBetween('VbE_custom_subscriptions_notifications.member_mail_sent_at', [$firstDayOfYear, $lastDayOfYear])
+            ->get();
+
+        $currentYearSubscriptionNotificationIdsCount = [];
+        foreach($currentYearSubscriptionNotificationArray as $entryId) {
+            $currentYearSubscriptionNotificationIdsCount[$entryId->entry_id][] = $entryId->entry_id;
+        }
 
         $totalSent = 0;
         foreach ($members as $member)
         {
-
-            if ($totalSent != SUBSCRIPTION_MAX_SENT)
+            $isNew = !array_key_exists($member->entry_id, $currentYearSubscriptionNotificationIdsCount);
+            $canReceive = $isNew || (!$isNew && count($currentYearSubscriptionNotificationIdsCount[$member->entry_id]) < 3);
+            // Send only 3 notifications
+            if ($totalSent != SUBSCRIPTION_MAX_SENT && $canReceive)
             {
                 // Current month notification
                 $subcriptionNotification = DB::table('VbE_custom_subscriptions_notifications')

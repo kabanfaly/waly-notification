@@ -1,6 +1,6 @@
 @props(['title' => '', 'active' => 'paiements'])
 @php
-    $active_class = 'bg-blue-700 text-blue-700 md:dark:text-blue-500';
+    $active_class = 'text-blue-700 md:dark:text-blue-500';
 @endphp
 <!DOCTYPE html>
 <html lang="fr">
@@ -25,11 +25,11 @@
     <main class="bg-white flex flex-row">
 
         <div class="grow">
-            <nav class="bg-white sm:px-4 dark:bg-gray-900 fixed w-full z-20 top-0 left-0 border-b border-gray-200 dark:border-gray-600">
+            <nav class="bg-white sm:px-4 dark:bg-gray-900 md:fixed w-full z-20 top-0 left-0 border-b border-gray-200 dark:border-gray-600">
                 <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
                     <a href="/" class="flex items-center space-x-3 rtl:space-x-reverse no-underline">
-                        <img class="w-32" src="{{ asset('images/logo.png') }}" class="mr-3 h-6 sm:h-9" alt="waly Logo"><br>
-                        <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Gestionnaire de notifications</span>
+                        <img class="w-32" src="{{ asset('images/logo.png') }}" class="mr-3 h-6 sm:h-9" alt="waly Logo">
+                        <span class="self-center sm:text-sm md:text-xl font-semibold whitespace-nowrap dark:text-white">Notifications</span>
                     </a>
                     @auth
                         <div class="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
@@ -58,7 +58,7 @@
                                     </li>
                                 </ul>
                             </div>
-                            <button type="button" class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-expanded="false">
+                            <button data-collapse-toggle="navbar-language" type="button" class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="navbar-language" aria-expanded="false">
                                 <span class="sr-only">Open main menu</span>
                                 <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h15M1 7h15M1 13h15"/>
@@ -66,8 +66,8 @@
                             </button>
                         </div>
 
-                        <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-user">
-                            <ul class="flex flex-col font-medium md:p-0 border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
+                        <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-language">
+                            <ul class="flex flex-col font-medium md:p-0 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900">
                                 <li>
                                     <a href="/" class="<?= $active === 'members' ? $active_class : 'text-gray-900' ?> block no-underline py-2 px-3 mt-2 rounded md:bg-transparent md:p-0">Membres</a>
                                 </li>
@@ -79,13 +79,13 @@
                                 </li>
                             </ul>
                         </div>
-                      @endauth
+                    @endauth
                 </div>
             </nav>
 
             <div class="md:mt-40 border-gray-200 rounded-lg mb-24">
                 <div class="rounded-lg mb-2 pl-4 text-center">
-                    <h2 class="text-[#0F3B61] text-2xl font-bold mb-6">{!! __($title) !!}</h2>
+                    <h2 class="text-[#0F3B61] md:text-2xl sm:text-sm font-bold mb-6">{!! __($title) !!}</h2>
                 </div>
                 <div class="min-h-screen">
                     <x-flash-message />
