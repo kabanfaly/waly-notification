@@ -5,6 +5,19 @@
     <form action="{{ $action }}" method="POST" id="editForm">
         @csrf
         @method($method)
+        <div class="rounded-t text-center border-b dark:border-gray-600">
+            <div>
+                <h2 class="text-2xl uppercase mb-1 font-semibold text-gray-900 bg-gray-50 dark:text-white">
+                    {!! __($title) !!}
+                </h2>
+            </div>
+
+            @if ($form_subtitle)
+                <div class="mb-1 text-sm">
+                    {!! __($form_subtitle) !!}
+                </div>
+            @endif
+        </div>
         <div>
             {{ $slot }}
         </div>

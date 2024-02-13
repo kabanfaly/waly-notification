@@ -97,7 +97,7 @@ class UserController extends Controller
             [
                 'first_name' => 'required',
                 'last_name' => 'required',
-                'email' => ['required', 'email', Rule::unique('users', 'email')],
+                'email' => ['required', 'email', Rule::unique('VbE_notification_users', 'email')],
                 'password' => 'required|confirmed|min:6',
             ]
         );
@@ -148,9 +148,12 @@ class UserController extends Controller
                 'email' => ['required', 'email'],
             ]
         );
-        $existingUser = User::where('id', '=', $user->id)->first();
+        $existingUser = User::where('email', '=', $formFields['email'])->first();
         if ($existingUser != null && $existingUser->id != auth()->user()->id) {
-            abort(403, 'Unauthorized Action');
+            return back()
+                ->with('param', 'email')
+                ->with('value', $formFields['email'])
+                ->with('error', 'users.email.exists');
         }
         $user->update($formFields);
         return redirect('/account/profile')->with('message', 'users.profile.updated');

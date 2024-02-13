@@ -16,6 +16,7 @@ return [
     'password.updated' => 'Votre mot de passe &eacute;t&eacute; modifi&eacute; avec succ&egrave;s',
     'invalid.current_password' => 'Le mot de passe actuel est incorrect',
     'edit_profile' => 'Modifier mon profil',
+    'my_profile' => 'Mon profil',
     'profile.updated' => 'Votre profil a &eacute;t&eacute; sauvegard&eacute; !',
     'change_profile_picture' => 'Modifier ma photo de profil',
     'forgot_password' => 'Mot de passe oubli&eacute; ?',
@@ -54,5 +55,6 @@ return [
     'activation.invalid_link' => "Ce lien n'est pas valide. Veuillez vous inscrire pour cr&eacute;er un compte.",
     'activation.sign_in' => 'Veuillez vous connecter',
     'activation.here' => 'ici.',
+    'email.exists' => "L'e-mail :email est déjà utilisé par un autre utilisateur!",
     'email_no_account' => "Aucun compte n'a &eacute;t&eacute; trouv&eacute; pour l'adresse e-mail saisie",
 ];
