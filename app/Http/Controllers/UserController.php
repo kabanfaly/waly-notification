@@ -7,12 +7,24 @@ use App\Mail\NotificationMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Models\User;
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Mail;
 
 
 class UserController extends Controller
 {
 
+
+    public function index()
+    {
+        return view(
+            'users.index',
+            [
+                'users' => User::latest()->filter(request(['search']))->paginate(20),
+                'search' => request('search')
+            ]
+        );
+    }
     /**
      * Opens the login page
      */
@@ -32,7 +44,7 @@ class UserController extends Controller
                 'password' => 'required',
             ]
         );
-
+        $formFields['activated'] = true;
         if (auth()->attempt($formFields, $request->remember)) {
             $request->session()->regenerate();
             return redirect('/');
@@ -59,6 +71,70 @@ class UserController extends Controller
         return redirect('/');
     }
 
+
+    public function create()
+    {
+        return view(
+            'users.add'
+        );
+    }
+
+    /**
+     * Register a user
+     */
+    public function store(Request $request)
+    {
+        Log::info('Creating a user account');
+
+        $existingUser = User::where('email', '=', $request['email'])
+            ->where('activated', '=', false)->first();
+
+        if ($existingUser != null) {
+            Log::info('Deleting an existing non activated user');
+            $existingUser->delete();
+        }
+        $formFields = $request->validate(
+            [
+                'first_name' => 'required',
+                'last_name' => 'required',
+                'email' => ['required', 'email', Rule::unique('users', 'email')],
+                'password' => 'required|confirmed|min:6',
+            ]
+        );
+
+        $formFields['password'] = bcrypt($formFields['password']);
+        $formFields['activated'] = true;
+
+        User::create($formFields);
+        Log::info('User account created');
+        return redirect('/users')->with('message', "L'utilisateur a été créé avec succès");
+    }
+
+    public function show(User $user)
+    {
+        return view(
+            'users.show',
+            [
+                'user' => $user
+            ]
+        );
+    }
+
+
+      /**
+     * Updates a user's status
+     */
+    public function updateEnabled(User $user)
+    {
+        if (auth()->id() == $user->id) {
+            return redirect('/users');
+        }
+        Log::info('Updating a user');
+        $user->update(['activated' => !$user['activated']]);
+        return back();
+    }
+
+
     public function updateProfile(Request $request, User $user)
     {
         if ($user->id != auth()->id()) {
@@ -78,16 +154,6 @@ class UserController extends Controller
         }
         $user->update($formFields);
         return redirect('/account/profile')->with('message', 'users.profile.updated');
-    }
-
-     /**
-     * Updates a user's status
-     */
-    public function updateEnabled(User $user)
-    {
-        Log::info('Updating a user');
-        $user->update(['activated' => !$user['activated']]);
-        return back();
     }
 
     public function initPasswordReset(Request $request)
@@ -217,5 +283,20 @@ class UserController extends Controller
         return redirect('/account/profile')->with('message', 'users.password.updated');
     }
 
+    /**
+     * Deletes a user
+     */
+    public function destroy(User $user)
+    {
+        if (auth()->id() == $user->id) {
+            return redirect('/users');
+        }
+
+        Log::info('Deleting a user');
+        $user->delete();
+        return redirect('/users')->with('message', 'users.deleted')
+            ->with('param', 'name')
+            ->with('value', $user->first_name);
+    }
 
 }

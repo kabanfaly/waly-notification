@@ -77,6 +77,9 @@
                                 <li>
                                     <a href="/transactions" class="<?= $active === 'transactions' ? $active_class : 'text-gray-900' ?> block no-underline py-2 px-3 mt-2 rounded md:bg-transparent md:p-0">Transactions</a>
                                 </li>
+                                <li>
+                                    <a href="/users" class="<?= $active === 'users' ? $active_class : 'text-gray-900' ?> block no-underline py-2 px-3 mt-2 rounded md:bg-transparent md:p-0">Utilisateurs</a>
+                                </li>
                             </ul>
                         </div>
                     @endauth
@@ -89,7 +92,9 @@
                 </div>
                 <div class="min-h-screen">
                     <x-flash-message />
-                    {{ $slot }}
+                    <div class="overflow-x-auto relative shadow-md sm:rounded-lg md:ml-10 md:mr-10 text-sm text-left text-gray-500 dark:text-gray-400">
+                        {{ $slot }}
+                    </div>
                 </div>
             </div>
             <footer

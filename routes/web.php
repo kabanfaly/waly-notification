@@ -17,6 +17,13 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::post('/users/authenticate', [UserController::class , 'authenticate']);
+Route::get('/users', [UserController::class , 'index'])->middleware('auth');
+Route::get('/users/add', [UserController::class , 'create'])->middleware('auth');
+Route::get('/users/{user}', [UserController::class , 'show'])->middleware('auth');
+Route::put('/users/{user}/changeEnabled', [UserController::class , 'updateEnabled'])->middleware('auth');
+Route::post('/users', [UserController::class , 'store'])->middleware('auth');
+Route::delete('/users/{user}', [UserController::class , 'destroy'])->middleware('auth');
+
 Route::get('/', [MemberController::class , 'members'])->middleware('auth');
 Route::get('/subscriptions', [MemberController::class , 'membersSubscriptions'])->middleware('auth');
 Route::get('/transactions', [MemberController::class , 'membersTransactions'])->middleware('auth');
