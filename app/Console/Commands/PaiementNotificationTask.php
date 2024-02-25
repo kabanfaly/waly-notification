@@ -211,9 +211,10 @@ class PaiementNotificationTask extends Command
     private function sendMailToWaly($notification, $body, $walymail, &$walynw_mail_sent_at)
     {
         $status = $notification->status;
-        $subject = $this->walyMailSubjects[$status];
-        $template = $this->walyMailTemplates[$status];
         $name = $body['name'];
+        $subject = $this->walyMailSubjects[$status] . " - $name";
+        $template = $this->walyMailTemplates[$status];
+
         if ($this->isNewMember($notification->entry_id))
         {
             if ($status !== 'pending')
@@ -225,7 +226,7 @@ class PaiementNotificationTask extends Command
 
         } else
         {
-            $subject = $status !== 'pending' ? "Renouvellement d'adhésion - $name" : "$subject - $name";
+            $subject = $status !== 'pending' ? "Renouvellement d'adhésion - $name" : $subject;
         }
 
         // Send mail to waly
