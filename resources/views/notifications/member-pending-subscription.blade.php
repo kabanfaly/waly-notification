@@ -1,11 +1,22 @@
 @component('mail::message')
     <h2> Bonjour {{ $body['name'] }},</h2>
+    <br>
+    Nous tenons à vous remercier pour votre intérêt pour Waly Network.
+    <br>
+    <br>
+    Nous avons remarqué que vous n'avez pas finalisé votre adhésion. Ainsi, vous trouverez ci-dessous le lien pour la finaliser.
     <p>
-        Vous avez paiement de {{ number_format($body['total_amount'], 2) }} {{ $body['currency'] }} en attente.
-        <br>
-        <br>
-        <span>Bien cordialement,</span>
-        <br>
-        <em>L'équipe de Waly Network</em>
+                LIEN
     </p>
+    {!! __('notification.payment_text_activities') !!}
+    <br><br>
+    {!! __('notification.payment_text_reminder') !!}
+    <br>
+    {!! __('notification.payment_text_help') !!}
+    <br>
+    {!! __('notification.payment_text_link') !!}
+    <br><br>
+    {!! __('notification.regard_text_1') !!}
+    <br>
+    {!! __('notification.regard_text_2') !!}
 @endcomponent

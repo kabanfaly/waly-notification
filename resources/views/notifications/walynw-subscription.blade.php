@@ -5,8 +5,8 @@
         Le montant de la cotisation est de {{ $body['total_amount'] }} $.
         <br>
         <br>
-        <span>Bien cordialement,</span>
-        <br />
-        <em>L'équipe de Waly Network</em>
+        {!! __('notification.regard_text_1') !!}
+        <br>
+        {!! __('notification.regard_text_2') !!}
     </p>
 @endcomponent

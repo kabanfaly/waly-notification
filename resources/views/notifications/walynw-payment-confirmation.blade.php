@@ -7,8 +7,8 @@
         N&deg; de la transaction : {{ $body['transaction_id'] }}
         <br>
         <br>
-        <span>Bien cordialement,</span>
-        <br />
-        <em>L'équipe de Waly Network</em>
+        {!! __('notification.regard_text_1') !!}
+        <br>
+        {!! __('notification.regard_text_2') !!}
     </p>
 @endcomponent

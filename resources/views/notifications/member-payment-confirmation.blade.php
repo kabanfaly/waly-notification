@@ -1,17 +1,20 @@
 @component('mail::message')
     <h2> Bonjour {{ $body['name'] }},</h2>
-    <p>
-        Votre paiement de {{ number_format($body['total_amount'], 2) }} {{ $body['currency'] }} a bien été reçu.
-        <br>
-        Date du paiement : {{ $body['date_created_gmt'] }}<br>
-        N&deg; de la transaction : {{ $body['transaction_id'] }}
-        <br>
-        <br>
-        Merci de votre paiement.
-        <br>
-        <br>
-        <span>Bien cordialement,</span>
-        <br>
-        <em>L'équipe de Waly Network</em>
-    </p>
+    <br>
+    Nous tenons à vous remercier de ce geste de confiance à notre endroit.
+    <br>
+    <br>
+    {!! __('notification.payment_text_activities') !!}
+    <br>
+    <br>
+    {!! __('notification.payment_text_reminder') !!}
+    <br>
+    {!! __('notification.payment_text_help') !!}
+    <br>
+    {!! __('notification.payment_text_link') !!}
+    <br>
+    <br>
+    {!! __('notification.regard_text_1') !!}
+    <br>
+    {!! __('notification.regard_text_2') !!}
 @endcomponent

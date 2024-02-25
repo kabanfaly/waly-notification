@@ -15,3 +15,10 @@ To enable the test mode:
 # Cron execution 
 
 php PATH_TO_PROJECT/artisan schedule:run >> PATH_TO_PROJECT/storage/logs/cron.log
+
+# Commands
+## Command to notify for subscriptions
+php artisan subscription_notification:task
+
+## Command to notify for payments
+php artisan payment_notification:task

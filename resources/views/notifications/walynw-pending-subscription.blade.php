@@ -4,8 +4,8 @@
         Une notification de paiement en attente de {{ number_format($body['total_amount'], 2) }} {{ $body['currency'] }} a été envoyée à {{ $body['name'] }} ({{ $body['email'] }})
         <br>
         <br>
-        <span>Bien cordialement,</span>
-        <br />
-        <em>L'équipe de Waly Network</em>
+        {!! __('notification.regard_text_1') !!}
+        <br>
+        {!! __('notification.regard_text_2') !!}
     </p>
 @endcomponent

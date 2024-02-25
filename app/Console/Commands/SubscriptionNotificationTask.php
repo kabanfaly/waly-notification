@@ -44,6 +44,47 @@ class SubscriptionNotificationTask extends Command
         $this->info('Subscription notification task executed successfully!');
     }
 
+    /**
+     * Get the subscription date for member.
+     */
+    private function getMemberSubscriptionDate($entryId)
+    {
+        return DB::table('VbE_view_wpforms_members_payments')
+            ->where('entry_id', $entryId)
+            ->orderBy('date_created_gmt')
+            ->limit(1)
+            ->value('date_created_gmt');
+    }
+
+    private function canBeNotified($member)
+    {
+        // Get the subscription date for member.
+        $subscriptionDate = $this->getMemberSubscriptionDate($member->entry_id);
+        if (!$subscriptionDate) {
+            return false;
+        }
+        $subscriptionDate = Carbon::parse($subscriptionDate);
+        // Subscription anniversary date.
+        $subscriptionRenawalDate = Carbon::createFromDate(date('Y'), $subscriptionDate->month, $subscriptionDate->day);
+
+        if ($subscriptionDate->year < 2023) { // for members subscribed before 2023, consider the 1 day or the year as the subscription anniversary date.
+            $subscriptionRenawalDate = Carbon::createFromDate(date('Y'), 1, 1);
+        }
+
+        $today = Carbon::now();
+        if ($today->diffInMonths($subscriptionRenawalDate) <= 3) { // anniversary in 3 months or past 3 months ago.
+            Log::info("{$member->name} Subscription date: {$subscriptionDate} - Renewal date: {$subscriptionRenawalDate}");
+            return $subscriptionRenawalDate->toDateString();
+        }
+
+        return false;
+    }
+
+    /**
+     * Get the subscription date for all members.
+     */
+
+
     private function notifyForSubscriptionPayments() {
         Log::info("Reminder: Sending mails subscription --> Start");
 
@@ -53,7 +94,7 @@ class SubscriptionNotificationTask extends Command
         $firstDayOfMonth = Carbon::createFromDate(date('Y'), date('m'), 1);
         $lastDayOfMonth = Carbon::createFromDate(date('Y'), date('m'), date('t'));
 
-        // Payments made on current year
+        // Payments made in current year
         $currentYearcompletedPaymentsArray = DB::table('VbE_view_wpforms_members_payments')->select('entry_id')
             ->whereBetween('VbE_view_wpforms_members_payments.date_updated_gmt', [$firstDayOfYear, $lastDayOfYear])
             ->whereIn('VbE_view_wpforms_members_payments.status', ['processed', 'completed'])
@@ -82,8 +123,9 @@ class SubscriptionNotificationTask extends Command
         $totalSent = 0;
         foreach ($members as $member)
         {
-            $isNew = !array_key_exists($member->entry_id, $currentYearSubscriptionNotificationIdsCount);
-            $canReceive = $isNew || (!$isNew && count($currentYearSubscriptionNotificationIdsCount[$member->entry_id]) < 3);
+            $isNew = !array_key_exists($member->entry_id, $currentYearSubscriptionNotificationIdsCount); // if the member has not been notified yet in current year
+            $canBenotified = $this->canBeNotified($member); // if the member can be notified
+            $canReceive = ($isNew && $canBenotified !== false) || (!$isNew && $canBenotified !== false && count($currentYearSubscriptionNotificationIdsCount[$member->entry_id]) < 3);
             // Send only 3 notifications
             if ($totalSent != SUBSCRIPTION_MAX_SENT && $canReceive)
             {
@@ -95,18 +137,19 @@ class SubscriptionNotificationTask extends Command
                 if ($subcriptionNotification == 0) {
                     $member_mail_sent_at = null;
                     $walynw_mail_sent_at = null;
+                    $member->date = $canBenotified;
                     $body = $this->buidBody($member);
 
                     $member_mail = $this->isProduction ? $member->email : config('app.testmail');
 
-                    if (Mail::to($member_mail)->send(new NotificationMail($body, 'notifications.member-subscription', 'Rappel de paiement de cotisation')))
+                    if (Mail::to($member_mail)->send(new NotificationMail($body, 'notifications.member-subscription', 'Renouvellement de la cotisation annuelle')))
                     {
                         $member_mail_sent_at = Carbon::now();
                         Log::info("Subscription: Member Mail sent to {$member->email}");
                     }
 
                     $walymail = $this->isProduction ? config('app.walynw_email') : config('app.testmail');
-                    if (Mail::to($walymail)->send(new NotificationMail($body, 'notifications.walynw-subscription', 'Notification de rappel de paiement de cotisation')))
+                    if (Mail::to($walymail)->send(new NotificationMail($body, 'notifications.walynw-subscription', 'Notification de renouvellement de la cotisation annuelle')))
                     {
                         $walynw_mail_sent_at = Carbon::now();
                         Log::info("Subscription: Walynw Mail sent to {$member->email}");
@@ -127,12 +170,13 @@ class SubscriptionNotificationTask extends Command
         Log::info("Reminder: Sending mails subscription --> End");
     }
 
-    private function buidBody($notification)
+    private function buidBody($member)
     {
         return [
-            'name' => $notification->name,
-            'email' => $notification->email,
-            'total_amount' => str_replace('&#36; ', '', $notification->amount)
+            'name' => $member->name,
+            'email' => $member->email,
+            'date' =>$member->date,
+            'total_amount' => str_replace('&#36; ', '', $member->amount)
         ];
     }
 }

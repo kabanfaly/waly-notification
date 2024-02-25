@@ -20,7 +20,7 @@ define('WALY_COMPLETED_PAYMENT_SUBJECT', 'Notification de paiement');
 define('WALY_PENDING_PAYMENT_SUBJECT', 'Notification de paiement en attente');
 define('MAX_SENT', 20);
 
-class MailNotificationTask extends Command
+class PaiementNotificationTask extends Command
 {
     /**
      * The name and signature of the console command.
