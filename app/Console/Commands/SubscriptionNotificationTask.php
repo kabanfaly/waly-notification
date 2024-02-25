@@ -125,7 +125,8 @@ class SubscriptionNotificationTask extends Command
         {
             $isNew = !array_key_exists($member->entry_id, $currentYearSubscriptionNotificationIdsCount); // if the member has not been notified yet in current year
             $canBenotified = $this->canBeNotified($member); // if the member can be notified
-            $canReceive = ($isNew && $canBenotified !== false) || (!$isNew && $canBenotified !== false && count($currentYearSubscriptionNotificationIdsCount[$member->entry_id]) < 3);
+            $notificationCount = count($currentYearSubscriptionNotificationIdsCount[$member->entry_id]);
+            $canReceive = ($isNew && $canBenotified !== false) || (!$isNew && $canBenotified !== false && $notificationCount < 3);
             // Send only 3 notifications
             if ($totalSent != SUBSCRIPTION_MAX_SENT && $canReceive)
             {
@@ -142,14 +143,14 @@ class SubscriptionNotificationTask extends Command
 
                     $member_mail = $this->isProduction ? $member->email : config('app.testmail');
 
-                    if (Mail::to($member_mail)->send(new NotificationMail($body, 'notifications.member-subscription', 'Renouvellement de la cotisation annuelle')))
+                    if (Mail::to($member_mail)->send(new NotificationMail($body, 'notifications.member-subscription', "Renouvellement de la cotisation annuelle")))
                     {
                         $member_mail_sent_at = Carbon::now();
                         Log::info("Subscription: Member Mail sent to {$member->email}");
                     }
 
                     $walymail = $this->isProduction ? config('app.walynw_email') : config('app.testmail');
-                    if (Mail::to($walymail)->send(new NotificationMail($body, 'notifications.walynw-subscription', 'Notification de renouvellement de la cotisation annuelle')))
+                    if (Mail::to($walymail)->send(new NotificationMail($body, 'notifications.walynw-subscription', "Notif.  Renouvellement de la cotisation annuelle ($member->name - Rappel N° $notificationCount)")))
                     {
                         $walynw_mail_sent_at = Carbon::now();
                         Log::info("Subscription: Walynw Mail sent to {$member->email}");
@@ -175,7 +176,7 @@ class SubscriptionNotificationTask extends Command
         return [
             'name' => $member->name,
             'email' => $member->email,
-            'date' =>$member->date,
+            'notificationCount' => $member->notificationCount,
             'total_amount' => str_replace('&#36; ', '', $member->amount)
         ];
     }

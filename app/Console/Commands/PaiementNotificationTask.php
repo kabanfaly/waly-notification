@@ -82,6 +82,12 @@ class PaiementNotificationTask extends Command
         $this->info('Notification task executed successfully!');
     }
 
+    private function isNewMember($entryId)
+    {
+        return DB::table('VbE_custom_payments_notifications')
+            ->where('entry_id', $entryId)
+            ->count() == 0;
+    }
     /**
      * Send mails for all new payments.
      */
@@ -185,8 +191,17 @@ class PaiementNotificationTask extends Command
     private function sendMailToMember($notification, $body, $member_mail, &$member_mail_sent_at)
     {
         $status = $notification->status;
+        $subject = $this->memberMailSubjects[$status];
+        if ($this->isNewMember($notification->entry_id))
+        {
+            $subject = $status !== 'pending' ? 'Merci pour votre adhésion à Waly Network' : $subject;
+
+        } else
+        {
+            $subject = $status !== 'pending' ? 'Merci pour le renouvellement de votre adhésion à Waly Network' : $subject;
+        }
         // Send mail to member
-        if (Mail::to($member_mail)->send(new NotificationMail($body, $this->memberMailTemplates[$status], $this->memberMailSubjects[$status])))
+        if (Mail::to($member_mail)->send(new NotificationMail($body, $this->memberMailTemplates[$status], $subject)))
         {
             $member_mail_sent_at = Carbon::now();
             Log::info("Member Mail sent to {$notification->email}");
@@ -196,8 +211,25 @@ class PaiementNotificationTask extends Command
     private function sendMailToWaly($notification, $body, $walymail, &$walynw_mail_sent_at)
     {
         $status = $notification->status;
+        $subject = $this->walyMailSubjects[$status];
+        $template = $this->walyMailTemplates[$status];
+        $name = $body['name'];
+        if ($this->isNewMember($notification->entry_id))
+        {
+            if ($status !== 'pending')
+            {
+
+                $subject = "Nouvelle Adhésion - {$name}";
+                $template = "notifications.walynw-payment-new-member";
+            }
+
+        } else
+        {
+            $subject = $status !== 'pending' ? "Renouvellement d'adhésion - $name" : "$subject - $name";
+        }
+
         // Send mail to waly
-        if (Mail::to($walymail)->send(new NotificationMail($body, $this->walyMailTemplates[$status], $this->walyMailSubjects[$status])))
+        if (Mail::to($walymail)->send(new NotificationMail($body, $template, $subject)))
         {
             $walynw_mail_sent_at = Carbon::now();
             Log::info("Walynw Mail sent to {$notification->email}");
