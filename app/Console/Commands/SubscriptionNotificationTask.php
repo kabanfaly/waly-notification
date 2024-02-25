@@ -125,7 +125,7 @@ class SubscriptionNotificationTask extends Command
         {
             $isNew = !array_key_exists($member->entry_id, $currentYearSubscriptionNotificationIdsCount); // if the member has not been notified yet in current year
             $canBenotified = $this->canBeNotified($member); // if the member can be notified
-            $notificationCount = count($currentYearSubscriptionNotificationIdsCount[$member->entry_id]);
+            $notificationCount = $isNew ? 1 : count($currentYearSubscriptionNotificationIdsCount[$member->entry_id]);
             $canReceive = ($isNew && $canBenotified !== false) || (!$isNew && $canBenotified !== false && $notificationCount < 3);
             // Send only 3 notifications
             if ($totalSent != SUBSCRIPTION_MAX_SENT && $canReceive)
@@ -143,7 +143,7 @@ class SubscriptionNotificationTask extends Command
 
                     $member_mail = $this->isProduction ? $member->email : config('app.testmail');
 
-                    if (Mail::to($member_mail)->send(new NotificationMail($body, 'notifications.member-subscription', "Renouvellement de la cotisation annuelle")))
+                    if (Mail::to($member_mail)->send(new NotificationMail($body, 'notifications.member-subscription', "Rappel de renouvellement de votre cotisation annuelle")))
                     {
                         $member_mail_sent_at = Carbon::now();
                         Log::info("Subscription: Member Mail sent to {$member->email}");
@@ -176,7 +176,7 @@ class SubscriptionNotificationTask extends Command
         return [
             'name' => $member->name,
             'email' => $member->email,
-            'notificationCount' => $member->notificationCount,
+            'date' => $member->date,
             'total_amount' => str_replace('&#36; ', '', $member->amount)
         ];
     }
