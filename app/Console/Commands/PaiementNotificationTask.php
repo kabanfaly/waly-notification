@@ -246,6 +246,8 @@ class PaiementNotificationTask extends Command
             'date_created_gmt' => $notification->date_created_gmt,
             'transaction_id' => $notification->transaction_id,
             'currency' => $notification->currency,
+            'entry_id' => $notification->entry_id,
+            'payment_url' => url('/payment/pending/'. $notification->id)
         ];
     }
 }

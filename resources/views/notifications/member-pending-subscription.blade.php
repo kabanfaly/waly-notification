@@ -5,9 +5,11 @@
     <br>
     <br>
     Nous avons remarqué que vous n'avez pas finalisé votre adhésion. Ainsi, vous trouverez ci-dessous le lien pour la finaliser.
-    <p>
-                LIEN
-    </p>
+    <br>
+    @component('mail::button', ['url' => $body['payment_url']])
+        Finalisez votre paiement ici.
+    @endcomponent
+    <br>
     {!! __('notification.payment_text_activities') !!}
     <br><br>
     {!! __('notification.payment_text_reminder') !!}

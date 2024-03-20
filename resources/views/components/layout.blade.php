@@ -26,7 +26,7 @@
 
         <div class="grow">
             <nav class="bg-white sm:px-4 dark:bg-gray-900 md:fixed w-full z-20 top-0 left-0 border-b border-gray-200 dark:border-gray-600">
-                <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+                <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-2">
                     <a href="/" class="flex items-center space-x-3 rtl:space-x-reverse no-underline">
                         <img class="w-32" src="{{ asset('images/logo.png') }}" class="mr-3 h-6 sm:h-9" alt="waly Logo">
                         <span class="self-center sm:text-sm md:text-xl font-semibold whitespace-nowrap dark:text-white">Notifications</span>
@@ -85,29 +85,30 @@
                     @endauth
                 </div>
             </nav>
-
-            <div class="md:mt-40 border-gray-200 rounded-lg mb-24">
-                <div class="rounded-lg mb-2 pl-4 text-center">
-                    <h2 class="text-[#0F3B61] md:text-2xl sm:text-sm font-bold mb-6">{!! __($title) !!}</h2>
-                </div>
-                <div class="min-h-screen">
-                    <x-flash-message />
-                    <div class="overflow-x-auto relative shadow-md sm:rounded-lg md:ml-10 md:mr-10 text-sm text-left text-gray-500 dark:text-gray-400">
-                        {{ $slot }}
+            <div class="relative overflow-x-auto">
+                <div class="md:mt-40 border-gray-200 rounded-lg mb-24">
+                    <div class="rounded-lg mb-2 pl-4 text-center">
+                        <h2 class="text-[#0F3B61] md:text-2xl sm:text-sm font-bold mb-6">{!! __($title) !!}</h2>
+                    </div>
+                    <div class="min-h-screen">
+                        <x-flash-message />
+                        <div class="overflow-x-auto relative shadow-md sm:rounded-lg md:ml-10 md:mr-10 text-sm text-left text-gray-500 dark:text-gray-400">
+                            {{ $slot }}
+                        </div>
                     </div>
                 </div>
+                <footer
+                    class="fixed bottom-0 left-0 w-full md:px-60 shadow text-white h-24 mt-24 opacity-90 p-4 bg-[#0F3B61] md:p-6 dark:bg-gray-800">
+                    <div class="py-6 px-4 md:flex md:items-center md:justify-between">
+                        <span class="text-sm dark:text-gray-300 sm:text-center">&copy;
+                            @php
+                                echo date('Y');
+                            @endphp
+                            <a href="https://walynetwork.com/" class="hover:underline">Waly Network</a>
+                        </span>
+                    </div>
+                </footer>
             </div>
-            <footer
-                class="fixed bottom-0 left-0 w-full md:px-60 shadow text-white h-24 mt-24 opacity-90 p-4 bg-[#0F3B61] md:p-6 dark:bg-gray-800">
-                <div class="py-6 px-4 md:flex md:items-center md:justify-between">
-                    <span class="text-sm dark:text-gray-300 sm:text-center">&copy;
-                        @php
-                            echo date('Y');
-                        @endphp
-                        <a href="https://walynetwork.com/" class="hover:underline">Waly Network</a>
-                    </span>
-                </div>
-            </footer>
         </div>
     </main>
 </body>

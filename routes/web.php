@@ -42,3 +42,9 @@ Route::put('/account/profile/{user}', [UserController::class , 'updateProfile'])
 Route::get('/account/profile/edit', [UserController::class , 'editProfile'])->middleware('auth');
 Route::put('/account/profile/change-password/{user}', [UserController::class , 'updatePassword'])->middleware('auth');
 Route::get('/account/profile/change-password', [UserController::class , 'changePassword'])->middleware('auth');
+
+Route::get('/payment/pending/{paymentId}', [PaymentController::class , 'showPendingPayment']);
+Route::post('/payment/pay/pending/{paymentId}', [PaymentController::class , 'payPending']);
+Route::get('/payment/declined', [PaymentController::class , 'error']);
+Route::get('/payment/pending/success/{paymentId}', [PaymentController::class , 'payPendingSuccess']);
+Route::get('/payment/success/{transactionId}', [PaymentController::class , 'success']);
