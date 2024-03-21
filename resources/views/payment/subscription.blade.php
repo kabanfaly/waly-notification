@@ -1,4 +1,4 @@
-<x-layout title="Paiement en attente">
+<x-layout title="Paiement de la cotisation annuelle">
 
     <form action="/payment/pay/subscription/{{ $member->entry_id }}" method="POST">
         @csrf

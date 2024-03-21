@@ -78,7 +78,7 @@ class PaymentController extends Controller
             $response = $this->gateway->purchase(array(
                 'amount' => formatAmount($member->amount),
                 'currency' => env('PAYPAL_CURRENCY'),
-                'returnUrl' => url('/payment/subscription/success/' . request('entry_id')),
+                'returnUrl' => url('/payment/subscription/success/' . $entryId),
                 'cancelUrl' => url('/payment/declined'),
             ))->send();
 
