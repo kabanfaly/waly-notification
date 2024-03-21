@@ -67,7 +67,7 @@
                         {{ $member->phone }}
                     </td>
                     <td class="py-4 px-6">
-                        {{ str_replace('&#36; ', '', $member->amount) }} $
+                        {{ formatAmount($member->amount) }} $
                     </td>
                     <td class="py-4 px-6">
                         {{ $member->member_mail_sent_at }}

@@ -9,9 +9,11 @@
     <br>
     <br>
     Merci de procéder au renouvellement en utilisation le lien ci-dessous :
-    <p>
-        LIEN
-    </p>
+    <br>
+    @component('mail::button', ['url' => $body['payment_url']])
+        Payez ici
+    @endcomponent
+    <br>
     <br>
     <br>
     {!! __('notification.regard_text_1') !!}

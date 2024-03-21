@@ -177,7 +177,9 @@ class SubscriptionNotificationTask extends Command
             'name' => $member->name,
             'email' => $member->email,
             'date' => $member->date,
-            'total_amount' => str_replace('&#36; ', '', $member->amount)
+            'total_amount' => formatAmount($member->amount),
+            'entry_id' => $member->entry_id,
+            'payment_url' => url('/payment/subscription/'. $member->entry_id)
         ];
     }
 }

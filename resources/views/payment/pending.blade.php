@@ -19,7 +19,7 @@
                 <span class="font-bold mr-2 py-2">Montant : </span>
                 <span class="text-md text-[#0F3B61] text-start">
                     @php
-                        $formatted_price = number_format($member->total_amount, 2)
+                        $formatted_price = number_format($member->total_amount, 2);
                     @endphp
                     {{ $formatted_price }} <i class="fa-solid fa-dollar "></i>
                 </span>
