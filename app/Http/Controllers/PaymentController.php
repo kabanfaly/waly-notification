@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 class PaymentController extends Controller
 {
+    const CANCEL_URL = '/payment/declined';
     private $gateway;
 
     public function __construct() {
@@ -45,7 +46,7 @@ class PaymentController extends Controller
                     'amount' => $payment->total_amount,
                     'currency' => env('PAYPAL_CURRENCY'),
                     'returnUrl' => url('/payment/pending/success/' . $paymentId),
-                    'cancelUrl' => url('/payment/declined'),
+                    'cancelUrl' => url(self::CANCEL_URL),
                 ))->send();
 
                 if ($response->isRedirect()) {
@@ -79,7 +80,7 @@ class PaymentController extends Controller
                 'amount' => formatAmount($member->amount),
                 'currency' => env('PAYPAL_CURRENCY'),
                 'returnUrl' => url('/payment/subscription/success/' . $entryId),
-                'cancelUrl' => url('/payment/declined'),
+                'cancelUrl' => url(self::CANCEL_URL),
             ))->send();
 
             if ($response->isRedirect()) {
@@ -170,11 +171,11 @@ class PaymentController extends Controller
             }
             else{
                 Log::error($response->getMessage());
-                return redirect('/payment/declined');
+                return redirect(self::CANCEL_URL);
             }
         }
         else{
-            return redirect('/payment/declined');
+            return redirect(self::CANCEL_URL);
         }
     }
 
