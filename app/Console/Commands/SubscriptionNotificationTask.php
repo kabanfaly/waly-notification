@@ -173,13 +173,15 @@ class SubscriptionNotificationTask extends Command
 
     private function buidBody($member)
     {
+        $amount = formatAmount($member->amount);
         return [
             'name' => $member->name,
             'email' => $member->email,
             'date' => $member->date,
             'total_amount' => formatAmount($member->amount),
             'entry_id' => $member->entry_id,
-            'payment_url' => url('/payment/subscription/'. $member->entry_id)
+            'payment_url' => url('/payment/subscription/'. $member->entry_id),
+            'professional_user_url' => $amount > 30 ? false : url('/payment/subscription/'. $member->entry_id) . '?isProfessional=true'
         ];
     }
 }

@@ -1,4 +1,4 @@
-@component('mail::message')
+<x-mail::message>
     <h2> Bonjour,</h2>
     <br>
     {{ $body['name'] }} ({{ $body['email'] }}) vient d'adhérer au réseau Waly.
@@ -11,4 +11,4 @@
     {!! __('notification.regard_text_1') !!}
     <br>
     {!! __('notification.regard_text_2') !!}
-@endcomponent
+</x-mail::message>

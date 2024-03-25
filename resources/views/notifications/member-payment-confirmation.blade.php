@@ -1,4 +1,4 @@
-@component('mail::message')
+<x-mail::message>
     <h2> Bonjour {{ $body['name'] }},</h2>
     <br>
     Nous tenons à vous remercier de ce geste de confiance à notre endroit.
@@ -17,4 +17,4 @@
     {!! __('notification.regard_text_1') !!}
     <br>
     {!! __('notification.regard_text_2') !!}
-@endcomponent
+</x-mail::message>

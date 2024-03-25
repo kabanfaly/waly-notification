@@ -1,4 +1,4 @@
-@component('mail::message')
+<x-mail::message>
     <h2> Bonjour {{ $body['name'] }},</h2>
     <br>
     Merci d'être un membre apprécié de Waly Network.
@@ -10,13 +10,18 @@
     <br>
     Merci de procéder au renouvellement en utilisation le lien ci-dessous :
     <br>
-    @component('mail::button', ['url' => $body['payment_url']])
+    <x-mail::button :url="$body['payment_url']" color="primary">
         Payez ici
-    @endcomponent
-    <br>
-    <br>
+    </x-mail::button>
+    @if ($body['professional_user_url'] !== false)
+        <br>
+        Si vous n'êtes plus étudiant(e)
+        <x-mail::button :url="$body['professional_user_url']" color="primary">
+            Cliquez ici.
+        </x-mail::button>
+    @endif
     <br>
     {!! __('notification.regard_text_1') !!}
     <br>
     {!! __('notification.regard_text_2') !!}
-@endcomponent
+</x-mail::message>

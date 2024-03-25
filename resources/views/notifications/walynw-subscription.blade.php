@@ -1,4 +1,4 @@
-@component('mail::message')
+<x-mail::message>
     <h2> Bonjour,</h2>
     <br>
     Une notification de rappel de paiement de cotisation a été envoyée à {{ $body['name'] }} ({{ $body['email'] }}). <br>
@@ -8,4 +8,4 @@
     {!! __('notification.regard_text_1') !!}
     <br>
     {!! __('notification.regard_text_2') !!}
-@endcomponent
+</x-mail::message>

@@ -1,4 +1,4 @@
-@component('mail::message')
+<x-mail::message>
     <h2> Bonjour,</h2>
     <br>
     Un paiement de {{ number_format($body['total_amount'], 2) }} {{ $body['currency'] }} a été envoyé par {{ $body['name'] }} ({{ $body['email'] }})
@@ -10,4 +10,4 @@
     {!! __('notification.regard_text_1') !!}
     <br>
     {!! __('notification.regard_text_2') !!}
-@endcomponent
+</x-mail::message>

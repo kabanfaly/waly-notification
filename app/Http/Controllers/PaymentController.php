@@ -28,10 +28,14 @@ class PaymentController extends Controller
         return view('payment.pending', ['member' => $member]);
     }
 
-    public function showSubscriptionPayment(string $entryId) {
-        $member = DB::table('VbE_view_wpforms_members')
-            ->where('entry_id', $entryId)
-            ->first();
+    public function showSubscriptionPayment(Request $request, string $entryId) {
+        $isProfessional = $request->input('isProfessional') === 'true';
+        if ($isProfessional)
+        {
+            $this->upgradeStudentToProfessional($entryId);
+        }
+
+        $member = $this->getMemberByEntryId($entryId);
         return view('payment.subscription', ['member' => $member]);
     }
 
@@ -64,18 +68,18 @@ class PaymentController extends Controller
         }
     }
 
-    private function getMember(string $entryId)
+    private function getMemberByEntryId(string $entryId)
     {
         return DB::table('VbE_view_wpforms_members')
         ->where('entry_id', $entryId)
         ->first();
     }
 
-    public function paySubscription(string $entryId)
+    public function paySubscription(Request $request, string $entryId)
     {
         Log::info("Starting a subscription payment");
         try {
-            $member = $this->getMember($entryId);
+            $member = $this->getMemberByEntryId($entryId);
             $response = $this->gateway->purchase(array(
                 'amount' => formatAmount($member->amount),
                 'currency' => env('PAYPAL_CURRENCY'),
@@ -110,14 +114,14 @@ class PaymentController extends Controller
                 $arr = $response->getData();
 
                 DB::table('VbE_wpforms_payments')
-                    ->where('id', $paymentId)
-                        ->update(
-                            [
-                                'status' => 'completed',
-                                'transaction_id' =>  $arr['id'],
-                                'date_updated_gmt' => Carbon::now(),
-                            ],
-                        );
+                ->where('id', $paymentId)
+                ->update(
+                    [
+                        'status' => 'completed',
+                        'transaction_id' =>  $arr['id'],
+                        'date_updated_gmt' => Carbon::now(),
+                    ],
+                );
                 Log::info("Payment is Successfull. Your Transaction Id is : " . $arr['id']);
                 return redirect('/payment/success/' . $arr['id']);
             }
@@ -140,31 +144,33 @@ class PaymentController extends Controller
 
             $response = $transaction->send();
 
-            if ($response->isSuccessful()) {
+            if ($response->isSuccessful())
+            {
                 $arr = $response->getData();
-                $member = $this->getMember($entryId);
+                $member = $this->getMemberByEntryId($entryId);
                 if ($member)
                 {
                     $amount = formatAmount($member->amount);
+
                     DB::table('VbE_wpforms_payments')
-                        ->insert([
-                            [
-                                'entry_id' => $entryId,
-                                'subtotal_amount' => $amount,
-                                'discount_amount' => 0,
-                                'currency' => 'CAD',
-                                'total_amount' => $amount,
-                                'gateway' => 'paypal_standard',
-                                'type' => 'one-time',
-                                'mode' => 'live',
-                                'status' => 'completed',
-                                'transaction_id' =>  $arr['id'],
-                                'is_published' => 1,
-                                'form_id' => $amount == 30 ? 1754: 1648,
-                                'date_created_gmt' => Carbon::now(),
-                                'date_updated_gmt' => Carbon::now(),
-                            ],
-                            ]);
+                    ->insert([
+                        [
+                            'entry_id' => $entryId,
+                            'subtotal_amount' => $amount,
+                            'discount_amount' => 0,
+                            'currency' => 'CAD',
+                            'total_amount' => $amount,
+                            'gateway' => 'paypal_standard',
+                            'type' => 'one-time',
+                            'mode' => 'live',
+                            'status' => 'completed',
+                            'transaction_id' =>  $arr['id'],
+                            'is_published' => 1,
+                            'form_id' => $amount > 30 ? 1648 : 1754,
+                            'date_created_gmt' => Carbon::now(),
+                            'date_updated_gmt' => Carbon::now(),
+                        ],
+                    ]);
                     Log::info("Payment is Successfull. Your Transaction Id is : " . $arr['id']);
                     return redirect('/payment/success/' . $arr['id']);
                 }
@@ -177,6 +183,39 @@ class PaymentController extends Controller
         else{
             return redirect(self::CANCEL_URL);
         }
+    }
+
+    private function upgradeStudentToProfessional(string $entryId)
+    {
+        // update form_id
+        DB::table('VbE_wpforms_entry_fields')
+        ->where('entry_id', $entryId)
+        ->update(
+            [
+                'form_id' => 1648
+            ],
+        );
+        // update status
+        DB::table('VbE_wpforms_entry_fields')
+        ->where('entry_id', $entryId)
+        ->where('field_id', 143)
+        ->update(
+            [
+                'field_id' => 88,
+                'value' =>  'Professionnel(le) - &#36; 60.00'
+            ],
+        );
+
+        // amount
+        DB::table('VbE_wpforms_entry_fields')
+        ->where('entry_id', $entryId)
+        ->where('field_id', 130)
+        ->update(
+            [
+                'field_id' => 129,
+                'value' =>  '&#36; 60.00'
+            ],
+        );
     }
 
     public function error()
