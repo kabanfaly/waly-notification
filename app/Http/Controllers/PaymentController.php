@@ -202,7 +202,7 @@ class PaymentController extends Controller
         ->update(
             [
                 'field_id' => 88,
-                'value' =>  'Professionnel(le) - &#36; 60.00'
+                'value' =>  'Professionnel(le) - &#36; 50.00'
             ],
         );
 
@@ -213,7 +213,7 @@ class PaymentController extends Controller
         ->update(
             [
                 'field_id' => 129,
-                'value' =>  '&#36; 60.00'
+                'value' =>  '&#36; 50.00'
             ],
         );
     }
