@@ -52,7 +52,13 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="/logout" class="no-underline block py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
+                                        <a href="/settings"
+                                            class="no-underline block py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
+                                            <i class="fa-solid fa-wrench mr-2"></i> Paramétrage
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="/logout" class="font-bold no-underline block py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
                                             <i class="fa-solid fa-arrow-right-from-bracket mr-2"></i>Déconnexion
                                         </a>
                                     </li>

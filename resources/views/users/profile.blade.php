@@ -1,5 +1,5 @@
 <x-layout title="Mon compte" active="">
-    <div class="max-w-3xl mx-auto rounded-lg shadow p-2">
+    <div class="max-w-3xl mx-auto rounded-lg p-2">
         <div class="mb-4">
             <x-profile-item icon="user">{{ $user->first_name }} {{ $user->last_name }}</x-profile-item>
             <x-profile-item icon="envelope">{{ $user->email }}</x-profile-item>

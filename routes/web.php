@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\MemberController;
 use Illuminate\Support\Facades\Route;
@@ -52,3 +53,8 @@ Route::post('/payment/pay/subscription/{entryId}', [PaymentController::class , '
 Route::get('/payment/subscription/success/{entryId}', [PaymentController::class , 'paySubscriptionSuccess']);
 Route::get('/payment/declined', [PaymentController::class , 'error']);
 Route::get('/payment/success/{transactionId}', [PaymentController::class , 'success']);
+Route::get('/settings', [SettingsController::class , 'index']);
+Route::put('/settings/students/update-fees', [SettingsController::class , 'changeStudentFees']);
+Route::get('/settings/students/fees', [SettingsController::class , 'showStudentFees']);
+Route::put('/settings/professionals/update-fees', [SettingsController::class , 'changeProfessionalFees']);
+Route::get('/settings/professionals/fees', [SettingsController::class , 'showProfessionalFees']);

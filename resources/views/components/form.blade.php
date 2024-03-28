@@ -1,7 +1,7 @@
 @props(['action', 'cancel_link' => false, 'method', 'title', 'form_subtitle' => false, 'submit_button_label' => 'Enregistrer', 'cancel_button_label' => 'Annuler', 'submit_icon' => 'floppy-disk', 'cancel_icon' => 'ban', 'submit_disabled' => false])
 <div class="h-24 md:h-12">
 </div>
-<div {{ $attributes->merge(['class' => 'rounded max-w-3xl mx-auto rounded-lg shadow dark:bg-gray-700 p-2']) }}>
+<div {{ $attributes->merge(['class' => 'rounded max-w-3xl mx-auto rounded-lg dark:bg-gray-700 p-2']) }}>
     <form action="{{ $action }}" method="POST" id="editForm">
         @csrf
         @method($method)
