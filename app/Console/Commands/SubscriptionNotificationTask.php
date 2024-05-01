@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Mail;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 define('SUBSCRIPTION_MAX_SENT', 20);
+define('NOTIFICATION_NB_MONTH_MAX', 4); // TODO: set this to 3
 
 class SubscriptionNotificationTask extends Command
 {
@@ -69,10 +70,11 @@ class SubscriptionNotificationTask extends Command
 
         if ($subscriptionDate->year < 2023) { // for members subscribed before 2023, consider the 1 day or the year as the subscription anniversary date.
             $subscriptionRenawalDate = Carbon::createFromDate(date('Y'), 1, 1);
+            Log::info("{$member->name} subscribed before 2023 => subscription renewal date {$subscriptionRenawalDate}");
         }
 
         $today = Carbon::now();
-        if ($today->diffInMonths($subscriptionRenawalDate) <= 3) { // anniversary in 3 months or past 3 months ago.
+        if ($today->diffInMonths($subscriptionRenawalDate) <= NOTIFICATION_NB_MONTH_MAX) { // anniversary in NOTIFICATION_NB_MONTH_MAX months or past NOTIFICATION_NB_MONTH_MAX months ago.
             Log::info("{$member->name} Subscription date: {$subscriptionDate} - Renewal date: {$subscriptionRenawalDate}");
             return $subscriptionRenawalDate->toDateString();
         }
@@ -104,7 +106,6 @@ class SubscriptionNotificationTask extends Command
         foreach($currentYearcompletedPaymentsArray as $entryId) {
             $currentYearCompletedPaymentsIds[] = $entryId->entry_id;
         }
-
         // Members who have not been notified yet in current year
         $members = DB::table('VbE_view_wpforms_members')
             ->whereNotIn('VbE_view_wpforms_members.entry_id', $currentYearCompletedPaymentsIds)
