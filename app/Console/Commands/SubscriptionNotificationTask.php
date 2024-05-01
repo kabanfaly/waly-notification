@@ -70,7 +70,6 @@ class SubscriptionNotificationTask extends Command
 
         if ($subscriptionDate->year < 2023) { // for members subscribed before 2023, consider the 1 day or the year as the subscription anniversary date.
             $subscriptionRenawalDate = Carbon::createFromDate(date('Y'), 1, 1);
-            Log::info("{$member->name} subscribed before 2023 => subscription renewal date {$subscriptionRenawalDate}");
         }
 
         $today = Carbon::now();
@@ -90,12 +89,10 @@ class SubscriptionNotificationTask extends Command
     private function notifyForSubscriptionPayments() {
         Log::info("Reminder: Sending mails subscription --> Start");
 
-        $firstDayOfYear = Carbon::createFromDate(date('Y'), 1, 1);
-        $lastDayOfYear = Carbon::createFromDate(date('Y'), 12, 31);
-
-        $firstDayOfMonth = Carbon::createFromDate(date('Y'), date('m'), 1);
-        $lastDayOfMonth = Carbon::createFromDate(date('Y'), date('m'), date('t'));
-
+        $firstDayOfYear = Carbon::now()->startOfYear();
+        $lastDayOfYear = Carbon::now()->endOfYear();
+        $firstDayOfMonth = Carbon::now()->startOfMonth();
+        $lastDayOfMonth = Carbon::now()->endOfMonth();
         // Payments made in current year
         $currentYearcompletedPaymentsArray = DB::table('VbE_view_wpforms_members_payments')->select('entry_id')
             ->whereBetween('VbE_view_wpforms_members_payments.date_updated_gmt', [$firstDayOfYear, $lastDayOfYear])
@@ -120,14 +117,14 @@ class SubscriptionNotificationTask extends Command
         foreach($currentYearSubscriptionNotificationArray as $entryId) {
             $currentYearSubscriptionNotificationIdsCount[$entryId->entry_id][] = $entryId->entry_id;
         }
-
         $totalSent = 0;
         foreach ($members as $member)
-        {
-            $isNew = !array_key_exists($member->entry_id, $currentYearSubscriptionNotificationIdsCount); // if the member has not been notified yet in current year
+        {   // isNew = if the member has not been notified yet in current year
+            $isNew = !array_key_exists($member->entry_id, $currentYearSubscriptionNotificationIdsCount);
             $canBenotified = $this->canBeNotified($member); // if the member can be notified
             $notificationCount = $isNew ? 1 : count($currentYearSubscriptionNotificationIdsCount[$member->entry_id]);
-            $canReceive = ($isNew && $canBenotified !== false) || (!$isNew && $canBenotified !== false && $notificationCount < 3);
+
+            $canReceive = $canBenotified !== false && ($isNew  || (!$isNew && $notificationCount < NOTIFICATION_NB_MONTH_MAX));
             // Send only 3 notifications
             if ($totalSent != SUBSCRIPTION_MAX_SENT && $canReceive)
             {
@@ -165,7 +162,11 @@ class SubscriptionNotificationTask extends Command
                         ],
                     ]);
                     $totalSent++;
+                } else {
+                    Log::info("Subscription: Member {$member->name} has already been notified this month");
                 }
+            } else {
+                Log::info("Subscription: Member {$member->name} can not be notified");
             }
         }
 
