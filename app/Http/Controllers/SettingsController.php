@@ -16,27 +16,28 @@ class SettingsController extends Controller
     private function getStudentFees()
     {
         $studentFees = 20;
-        $studentMember = DB::table('VbE_view_wpforms_members')
-        ->select('amount')
-        ->orderBy('amount', 'asc')
+        $studentMember = DB::table('VbE_wpforms_entry_fields')
+        ->select('value')
+        ->where('field_id', 130)
         ->first();
+
         if($studentMember)
         {
-            $studentFees = formatAmount($studentMember->amount);
+            $studentFees = formatAmount($studentMember->value);
         }
         return $studentFees;
     }
 
     private function getProfessionalFees()
     {
-        $professionalMember = DB::table('VbE_view_wpforms_members')
-        ->select('amount')
-        ->orderBy('amount', 'desc')
+        $professionalMember = DB::table('VbE_wpforms_entry_fields')
+        ->select('value')
+        ->where('field_id', 129)
         ->first();
 
         if($professionalMember)
         {
-            $professionalFees = formatAmount($professionalMember->amount);
+            $professionalFees = formatAmount($professionalMember->value);
         }
         return $professionalFees;
     }
