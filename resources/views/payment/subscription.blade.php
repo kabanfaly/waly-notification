@@ -26,6 +26,17 @@
                 class="mt-4 text-white bg-[#0F3B61] hover:bg-[#0F3B61] focus:ring-4 focus:outline-none focus:ring-[#0F3B61] font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-[#0F3B61] dark:hover:bg-[#0F3B61] dark:focus:ring-[#0F3B61]">
                 <i class="fa-solid fa-credit-card mr-2"></i> Payer
             </button>
+            @if ($fromMember)
+            @php
+                $url = "/payment/member" . ($isProfessional ? '?isProfessional=true' : '');
+            @endphp
+                <a href="{{ $url }}" class="no-underline">
+                    <button type="button"
+                        class="mt-4 text-white bg-[#0F3B61] hover:bg-[#0F3B61] focus:ring-4 focus:outline-none focus:ring-[#0F3B61] font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-[#0F3B61] dark:hover:bg-[#0F3B61] dark:focus:ring-[#0F3B61]">
+                        <i class="fa-solid fa-ban mr-2"></i> Annuler
+                    </button>
+                </a>
+            @endif
             <a href="https://walynetwork.com" class="ml-4">Retour</a>
         </div>
     </form>

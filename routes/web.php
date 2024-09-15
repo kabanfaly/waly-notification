@@ -49,6 +49,8 @@ Route::post('/payment/pay/pending/{paymentId}', [PaymentController::class , 'pay
 Route::get('/payment/pending/success/{paymentId}', [PaymentController::class , 'payPendingSuccess']);
 
 Route::get('/payment/subscription/{entryId}', [PaymentController::class , 'showSubscriptionPayment']);
+Route::get('/payment/member', [PaymentController::class , 'showSubscriptionForm']);
+Route::post('/payment/member/search', [PaymentController::class , 'searchMember']);
 Route::post('/payment/pay/subscription/{entryId}', [PaymentController::class , 'paySubscription']);
 Route::get('/payment/subscription/success/{entryId}', [PaymentController::class , 'paySubscriptionSuccess']);
 Route::get('/payment/declined', [PaymentController::class , 'error']);

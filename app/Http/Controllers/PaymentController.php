@@ -28,15 +28,43 @@ class PaymentController extends Controller
         return view('payment.pending', ['member' => $member]);
     }
 
-    public function showSubscriptionPayment(Request $request, string $entryId) {
+    public function showSubscriptionPayment(Request $request, string $entryId)
+    {
         $isProfessional = $request->input('isProfessional') === 'true';
+        $fromMemberPage= $request->input('fromMember');
         if ($isProfessional)
         {
-            $this->upgradeStudentToProfessional($entryId);
+            $this->studentToProfessional($entryId); // upgrade to professional
         }
 
         $member = $this->getMemberByEntryId($entryId);
-        return view('payment.subscription', ['member' => $member]);
+        return view('payment.subscription', ['member' => $member, 'isProfessional' => $isProfessional, 'fromMember' => $fromMemberPage]);
+    }
+
+    public function showSubscriptionForm(Request $request)
+    {
+        $isProfessional = $request->input('isProfessional') === 'true';
+        $email = session()->get('email');
+
+        if ($isProfessional && $email) // downgrade to student
+        {
+            $member = $this->getMemberByColumnName('email', $email);
+            $this->professionalToStudent($member->entry_id);
+        }
+        return view('payment.subscription_form', ['error' => false, 'email' => $email]);
+    }
+
+    public function searchMember(Request $request)
+    {
+        $email = $request->input('email');
+        session()->put('email', $email);
+        $isNotStudent = $request->input('isStudent');
+        $member = $this->getMemberByColumnName('email', $email);
+        if ($member)
+        {
+            return redirect('/payment/subscription/' . $member->entry_id. '?isProfessional=' . ($isNotStudent ? 'true' : 'false') . '&fromMember=true');
+        }
+        return view('payment.subscription_form', ['error' => 'notification.account_not_found', 'email' => $email]);
     }
 
 
@@ -70,10 +98,16 @@ class PaymentController extends Controller
 
     private function getMemberByEntryId(string $entryId)
     {
+        return $this->getMemberByColumnName('entry_id', $entryId);
+    }
+
+    private function getMemberByColumnName(string $columnName, string $value)
+    {
         return DB::table('VbE_view_wpforms_members')
-        ->where('entry_id', $entryId)
+        ->where($columnName, $value)
         ->first();
     }
+
 
     public function paySubscription(Request $request, string $entryId)
     {
@@ -86,11 +120,11 @@ class PaymentController extends Controller
                 'returnUrl' => url('/payment/subscription/success/' . $entryId),
                 'cancelUrl' => url(self::CANCEL_URL),
             ))->send();
-
+            session()->put('isStudent', false);
             if ($response->isRedirect()) {
                 $response->redirect();
             }
-            else{
+            else {
                 return $response->getMessage();
             }
 
@@ -185,7 +219,7 @@ class PaymentController extends Controller
         }
     }
 
-    private function upgradeStudentToProfessional(string $entryId)
+    private function studentToProfessional(string $entryId)
     {
         // update form_id
         DB::table('VbE_wpforms_entry_fields')
@@ -202,7 +236,7 @@ class PaymentController extends Controller
         ->update(
             [
                 'field_id' => 88,
-                'value' =>  'Professionnel(le) - &#36; 50.00'
+                'value' =>  'Professionnel(le) - &#36; ' . config('app.professional_fees')
             ],
         );
 
@@ -213,7 +247,40 @@ class PaymentController extends Controller
         ->update(
             [
                 'field_id' => 129,
-                'value' =>  '&#36; 50.00'
+                'value' =>  '&#36; ' . config('app.professional_fees')
+            ],
+        );
+    }
+
+    private function professionalToStudent(string $entryId)
+    {
+        // update form_id
+        DB::table('VbE_wpforms_entry_fields')
+        ->where('entry_id', $entryId)
+        ->update(
+            [
+                'form_id' => 1754
+            ],
+        );
+        // update status
+        DB::table('VbE_wpforms_entry_fields')
+        ->where('entry_id', $entryId)
+        ->where('field_id', 88)
+        ->update(
+            [
+                'field_id' => 143,
+                'value' =>  'Professionnel(le) - &#36; ' . config('app.student_fees')
+            ],
+        );
+
+        // amount
+        DB::table('VbE_wpforms_entry_fields')
+        ->where('entry_id', $entryId)
+        ->where('field_id', 129)
+        ->update(
+            [
+                'field_id' => 130,
+                'value' =>  '&#36; ' . config('app.student_fees')
             ],
         );
     }

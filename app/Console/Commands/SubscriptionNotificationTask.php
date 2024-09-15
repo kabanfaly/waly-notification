@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Mail;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 define('SUBSCRIPTION_MAX_SENT', 20);
-define('NOTIFICATION_NB_MONTH_MAX', 4); // TODO: set this to 3
+define('NOTIFICATION_NB_MONTH_MAX', 3);
 
 class SubscriptionNotificationTask extends Command
 {

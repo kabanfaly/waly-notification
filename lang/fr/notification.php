@@ -11,4 +11,5 @@ return [
     'payment_text_link' => 'Liens importants : <a href="https://walynetwork.com/">Site web</a> <a href="https://ca.linkedin.com/company/waly-network">LinkedIn</a>  <a href="https://www.facebook.com/walynetwork/">Facebook</a>  <a href="https://chat.whatsapp.com/FIefxhgOTedHzydp77e5H4">WhatsApp</a>.',
     'regard_text_1' => '<span>Cordialement,</span>',
     'regard_text_2' => '<em>Le comité de coordination de Waly Network</em>',
+    'account_not_found' => "Aucun compte trouvé avec l'adresse e-mail fournie"
 ];

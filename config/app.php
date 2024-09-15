@@ -194,4 +194,6 @@ return [
     'db_datetime_format' => 'Y-m-d H:i:s',
     'datetime_format' => 'd/m/Y H:i:s',
     'js_date_format' => 'dd/mm/yyyy',
+    'student_fees' => env('STUDENT_FEES', '20.00'),
+    'professional_fees' => env('PROFESSIONAL_FEES', '50.00'),
 ];
