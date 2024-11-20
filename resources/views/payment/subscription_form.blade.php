@@ -1,4 +1,4 @@
-<x-layout title="Paiement de la cotisation annuelle">
+<x-layout title="Paiement de la cotisation annuelle" active="payment">
 
     <form action="/payment/member/search" method="POST">
         @csrf
